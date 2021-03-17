@@ -10,3 +10,12 @@ add_test_module(
 	gtest_main
 	math
 )
+
+add_test_module(
+	NAME CalculatorTests
+	PATH model/CalculatorTests.cpp
+	DEPENDS
+	gtest
+	gtest_main
+	model
+)
