@@ -2,12 +2,14 @@
 #include <gtest/gtest.h>
 #include <optional>
 
+using namespace model;
+
 TEST(CalculatorTests, Calculate_next_with_1_operation)
 {
-	using namespace model;
+	// 6 * 7
 	const OperationData input{OperationType::MULTIPLICATION, 6, 7};
-
 	Calculator sut{};
+	
 	sut.calculate(input);
 	const auto expected = 42;
 	const auto result = sut.get_running_total();
@@ -16,11 +18,11 @@ TEST(CalculatorTests, Calculate_next_with_1_operation)
 
 TEST(CalculatorTests, Calculate_next_with_2_operations)
 {
-	using namespace model;
+	// 4 * (2 + 3)
 	const OperationData input1{OperationType::ADDITION, 2, 3};
 	const OperationData input2{OperationType::MULTIPLICATION, PreviousResult{}, 4};
-
 	Calculator sut{};
+
 	sut.calculate(input1); // 2 + 3 = 5
 	const auto expected1 = 5;
 	const auto result1 = sut.get_running_total();
@@ -34,12 +36,12 @@ TEST(CalculatorTests, Calculate_next_with_2_operations)
 
 TEST(CalculatorTests, Calculate_next_with_3_operations)
 {
-	using namespace model;
+	// 2 * (5 * 3 + 4)
 	const OperationData input1{OperationType::MULTIPLICATION, 5, 3};
 	const OperationData input2{OperationType::ADDITION, PreviousResult{}, 4};
 	const OperationData input3{OperationType::MULTIPLICATION, 2, PreviousResult{}};
-
 	Calculator sut{};
+
 	sut.calculate(input1); // 5 * 3 = 15
 	const auto result1 = sut.get_running_total();
 	const auto expected1 = 15;

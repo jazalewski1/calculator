@@ -1,26 +1,13 @@
 #pragma once
 
+#include <functional>
+
 namespace math
 {
 using Value = int;
+using OperationFunction = std::function<Value (Value, Value)>;
 
-class Operation
-{
-public:
-	virtual ~Operation();
+Value addition(Value, Value);
 
-	virtual int execute(Value, Value) = 0;
-};
-
-class Addition : public Operation
-{
-public:
-	int execute(Value, Value) override;
-};
-
-class Multiplication : public Operation
-{
-public:
-	int execute(Value, Value) override;
-};
+Value multiplication(Value, Value);
 } // namespace math
