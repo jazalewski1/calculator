@@ -11,20 +11,27 @@ enum class OperationType
 	MULTIPLICATION
 };
 
-struct PreviousResult {};
+struct LhsOperand
+{
+	int value;
+};
+struct RhsOperand
+{
+	int value;
+};
 
 struct OperationData
 {
-	OperationData(OperationType type, int lhs, int rhs) :
-		type{type}, lhs{lhs}, rhs{rhs}
+	OperationData(OperationType type, LhsOperand lhs, RhsOperand rhs) :
+		type{type}, lhs{lhs.value}, rhs{rhs.value}
 	{
 	}
-	OperationData(OperationType type, int lhs, PreviousResult) :
-		type{type}, lhs{lhs}, rhs{std::nullopt}
+	OperationData(OperationType type, LhsOperand operand) :
+		type{type}, lhs{operand.value}, rhs{std::nullopt}
 	{
 	}
-	OperationData(OperationType type, PreviousResult, int rhs) :
-		type{type}, lhs{std::nullopt}, rhs{rhs}
+	OperationData(OperationType type, RhsOperand operand) :
+		type{type}, lhs{std::nullopt}, rhs{operand.value}
 	{
 	}
 

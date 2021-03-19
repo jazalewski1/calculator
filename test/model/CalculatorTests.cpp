@@ -7,7 +7,7 @@ using namespace model;
 TEST(CalculatorTests, Calculate_next_with_1_operation)
 {
 	// 6 * 7
-	const OperationData input{OperationType::MULTIPLICATION, 6, 7};
+	const OperationData input{OperationType::MULTIPLICATION, LhsOperand{6}, RhsOperand{7}};
 	Calculator sut{};
 	
 	sut.calculate(input);
@@ -18,9 +18,9 @@ TEST(CalculatorTests, Calculate_next_with_1_operation)
 
 TEST(CalculatorTests, Calculate_next_with_2_operations)
 {
-	// 4 * (2 + 3)
-	const OperationData input1{OperationType::ADDITION, 2, 3};
-	const OperationData input2{OperationType::MULTIPLICATION, PreviousResult{}, 4};
+	// (2 + 3) * 4
+	const OperationData input1{OperationType::ADDITION, LhsOperand{2}, RhsOperand{3}};
+	const OperationData input2{OperationType::MULTIPLICATION, RhsOperand{4}};
 	Calculator sut{};
 
 	sut.calculate(input1); // 2 + 3 = 5
@@ -37,9 +37,9 @@ TEST(CalculatorTests, Calculate_next_with_2_operations)
 TEST(CalculatorTests, Calculate_next_with_3_operations)
 {
 	// 2 * (5 * 3 + 4)
-	const OperationData input1{OperationType::MULTIPLICATION, 5, 3};
-	const OperationData input2{OperationType::ADDITION, PreviousResult{}, 4};
-	const OperationData input3{OperationType::MULTIPLICATION, 2, PreviousResult{}};
+	const OperationData input1{OperationType::MULTIPLICATION, LhsOperand{5}, RhsOperand{3}};
+	const OperationData input2{OperationType::ADDITION, RhsOperand{4}};
+	const OperationData input3{OperationType::MULTIPLICATION, LhsOperand{2}};
 	Calculator sut{};
 
 	sut.calculate(input1); // 5 * 3 = 15
