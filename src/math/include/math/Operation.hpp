@@ -1,36 +1,26 @@
 #pragma once
 
-#include "math/ValuePtr.hpp"
-
 namespace math
 {
+using Value = int;
+
 class Operation
 {
 public:
 	virtual ~Operation();
 
-	virtual int execute() = 0;
+	virtual int execute(Value, Value) = 0;
 };
 
 class Addition : public Operation
 {
 public:
-	Addition(ValuePtr lhs, ValuePtr rhs);
-
-	int execute() override;
-
-private:
-	ValuePtr lhs, rhs;
+	int execute(Value, Value) override;
 };
 
 class Multiplication : public Operation
 {
 public:
-	Multiplication(ValuePtr lhs, ValuePtr rhs);
-
-	int execute() override;
-
-private:
-	ValuePtr lhs, rhs;
+	int execute(Value, Value) override;
 };
 } // namespace math
