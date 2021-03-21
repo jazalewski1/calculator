@@ -1,22 +1,20 @@
 #pragma once
 
-#include "math/Operation.hpp"
-#include "model/OperationData.hpp"
-
 namespace model
 {
 class Calculator
 {
 public:
-	using Result = int;
+	virtual ~Calculator();
 
-	Calculator() = default;
+	using OperationResult = int;
+	OperationResult calculate_next();
 
-	void calculate(const OperationData&);
-
-	Result get_running_total() const;
+	bool has_finished() const;
 
 private:
-	Result running_total;
+	virtual OperationResult do_calculate_next() = 0;
+
+	virtual bool do_has_finished() const = 0;
 };
 } // namespace model

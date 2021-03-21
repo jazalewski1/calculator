@@ -1,35 +1,19 @@
-#include "math/Operation.hpp"
-#include "model/OperationData.hpp"
 #include "model/Calculator.hpp"
-#include <memory>
+#include "model/Symbol.hpp"
 
 namespace model
 {
-namespace
+Calculator::~Calculator()
 {
-math::OperationFunction make_operation(OperationType type)
-{
-	switch (type) // TODO: refactor this switch
-	{
-		case OperationType::ADDITION:
-			return math::addition;
-		case OperationType::MULTIPLICATION:
-			return math::multiplication;
-	}
-}
-} // namespace
-
-void Calculator::calculate(const OperationData& input)
-{
-	const auto lhs = input.lhs.value_or(running_total);
-	const auto rhs = input.rhs.value_or(running_total);
-	const auto operation = make_operation(input.type);
-
-	running_total = operation(lhs, rhs);
 }
 
-Calculator::Result Calculator::get_running_total() const
+Calculator::OperationResult Calculator::calculate_next()
 {
-	return running_total;
+	return do_calculate_next();
+}
+
+bool Calculator::has_finished() const
+{
+	return do_has_finished();
 }
 } // namespace model

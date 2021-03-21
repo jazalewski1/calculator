@@ -18,4 +18,5 @@ add_test_module(
 	gtest
 	gtest_main
 	model
+	util
 )

@@ -31,4 +31,16 @@ private:
 	std::string get_name() const override { return "BadAccessException"; }
 	std::string get_message() const override { return message_str; }
 };
+
+class InputErrorException : public Exception
+{
+public:
+	InputErrorException(std::string message_string) : message_str{message_string} {}
+
+private:
+	const std::string message_str;
+
+	std::string get_name() const override { return "InputErrorException"; }
+	std::string get_message() const override { return message_str; }
+};
 } // namespace util

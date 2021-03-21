@@ -1,12 +1,14 @@
 set(
 	HEADERS
 	include/model/Calculator.hpp
-	include/model/OperationData.hpp
+	include/model/RpnCalculator.hpp
+	include/model/Symbol.hpp
 )
 
 set(
 	SOURCES
 	src/Calculator.cpp
+	src/RpnCalculator.cpp
 )
 
 add_library(
@@ -24,4 +26,5 @@ target_include_directories(
 target_link_libraries(
 	model
 	math
+	util
 )
