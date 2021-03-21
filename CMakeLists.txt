@@ -17,4 +17,5 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/math)
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/model)
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/util)
 add_subdirectory(${PROJECT_SOURCE_DIR}/test)
