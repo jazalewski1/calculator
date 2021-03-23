@@ -1,4 +1,4 @@
-#include "model/RpnCalculator.hpp"
+#include "model/Calculator.hpp"
 #include "util/Exception.hpp"
 #include <gtest/gtest.h>
 #include <initializer_list>
@@ -9,7 +9,7 @@ using namespace model;
 
 namespace
 {
-void expect_results(RpnCalculator& sut, std::initializer_list<Value> expected_results, std::string_view input_info)
+void expect_results(Calculator& sut, std::initializer_list<Value> expected_results, std::string_view input_info)
 {
 	for (const auto& expected : expected_results)
 	{
@@ -22,7 +22,7 @@ void expect_results(RpnCalculator& sut, std::initializer_list<Value> expected_re
 TEST(CalculatorTests_Rpn, Empty_input_throws)
 {
 	std::vector<Symbol> input;
-	RpnCalculator sut{input};
+	Calculator sut{input};
 
 	EXPECT_THROW(sut.calculate_next(), util::BadAccessException);
 	EXPECT_TRUE(sut.has_finished());
@@ -34,7 +34,7 @@ TEST(CalculatorTests_Rpn, Single_value_returns_that_value)
 	{
 		Symbol{Value{42}}
 	};
-	RpnCalculator sut{input};
+	Calculator sut{input};
 
 	EXPECT_FALSE(sut.has_finished());
 	expect_results(sut, {42}, "42");
@@ -49,7 +49,7 @@ TEST(CalculatorTests_Rpn, Addition)
 		Symbol{Value{69}},
 		Symbol{OperationType::ADDITION},
 	};
-	RpnCalculator sut{input};
+	Calculator sut{input};
 
 	EXPECT_FALSE(sut.has_finished());
 	expect_results(sut, {111}, "42 + 69");
@@ -68,7 +68,7 @@ TEST(CalculatorTests_Rpn, Addition_four_times_in_a_row)
 		Symbol{OperationType::ADDITION},
 		Symbol{OperationType::ADDITION},
 	};
-	RpnCalculator sut{input};
+	Calculator sut{input};
 
 	EXPECT_FALSE(sut.has_finished());
 	expect_results(sut, {145, 214, 256}, "42 + 69 + 17 + 128");
@@ -86,7 +86,7 @@ TEST(CalculatorTests_Rpn, Multiplication_before_addition_when_multiplication_is_
 		Symbol{OperationType::ADDITION},
 	};
 
-	RpnCalculator sut{input};
+	Calculator sut{input};
 
 	expect_results(sut, {6, 11}, "2 * 3 + 5");
 }
@@ -101,7 +101,7 @@ TEST(CalculatorTests_Rpn, Multiplication_before_addition_when_addition_is_first)
 		Symbol{OperationType::MULTIPLICATION},
 		Symbol{OperationType::ADDITION},
 	};
-	RpnCalculator sut{input};
+	Calculator sut{input};
 
 	expect_results(sut, {15, 17}, "2 + 3 * 5");
 }
@@ -117,7 +117,7 @@ TEST(CalculatorTests_Rpn, Addition_in_parentheses_before_multiplication)
 		Symbol{OperationType::MULTIPLICATION},
 	};
 
-	RpnCalculator sut{input};
+	Calculator sut{input};
 
 	expect_results(sut, {5, 25}, "(2 + 3) * 5");
 }
@@ -135,7 +135,7 @@ TEST(CalculatorTests_Rpn, Multiplication_addition_multiplication)
 		Symbol{OperationType::ADDITION},
 	};
 
-	RpnCalculator sut{input};
+	Calculator sut{input};
 
 	expect_results(sut, {6, 20, 26}, "2 * 3 + 4 * 5");
 }
@@ -153,7 +153,7 @@ TEST(CalculatorTests_Rpn, Addition_multiplication_addition)
 		Symbol{OperationType::ADDITION},
 	};
 
-	RpnCalculator sut{input};
+	Calculator sut{input};
 
 	expect_results(sut, {12, 17, 19}, "2 + 3 * 4 + 5");
 }
@@ -172,7 +172,7 @@ TEST(CalculatorTests_Rpn, Wrong_input_with_not_enough_values_for_last_operations
 		Symbol{OperationType::MULTIPLICATION},
 	};
 
-	RpnCalculator sut{input};
+	Calculator sut{input};
 
 	EXPECT_NO_THROW(sut.calculate_next());
 	EXPECT_NO_THROW(sut.calculate_next());

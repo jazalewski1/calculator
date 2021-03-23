@@ -1,11 +1,15 @@
 #pragma once
 
+#include "model/Symbol.hpp"
+#include <vector>
+#include <stack>
+
 namespace model
 {
 class Calculator
 {
 public:
-	virtual ~Calculator();
+	Calculator(std::vector<Symbol> symbols);
 
 	using OperationResult = int;
 	OperationResult calculate_next();
@@ -13,8 +17,15 @@ public:
 	bool has_finished() const;
 
 private:
-	virtual OperationResult do_calculate_next() = 0;
+	using Symbols = std::vector<Symbol>;
+	using ValueStack = std::stack<int>;
 
-	virtual bool do_has_finished() const = 0;
+	Symbols symbols;
+	Symbols::const_iterator current_iterator;
+	ValueStack value_stack;
+
+	void extract_and_insert_values();
+
+	void process_operation();
 };
 } // namespace model

@@ -1,14 +1,12 @@
 set(
 	HEADERS
 	include/model/Calculator.hpp
-	include/model/RpnCalculator.hpp
 	include/model/Symbol.hpp
 )
 
 set(
 	SOURCES
 	src/Calculator.cpp
-	src/RpnCalculator.cpp
 )
 
 add_library(
