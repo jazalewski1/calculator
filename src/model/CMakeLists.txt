@@ -7,6 +7,7 @@ set(
 set(
 	SOURCES
 	src/Calculator.cpp
+	src/Symbol.cpp
 )
 
 add_library(

@@ -9,7 +9,8 @@ namespace model
 class Calculator
 {
 public:
-	Calculator(std::vector<Symbol> symbols);
+	using Symbols = std::vector<Symbol>;
+	Calculator(Symbols symbols);
 
 	using OperationResult = int;
 	OperationResult calculate_next();
@@ -17,15 +18,18 @@ public:
 	bool has_finished() const;
 
 private:
-	using Symbols = std::vector<Symbol>;
 	using ValueStack = std::stack<int>;
 
 	Symbols symbols;
 	Symbols::const_iterator current_iterator;
 	ValueStack value_stack;
 
-	void extract_and_insert_values();
+	Value read_value_from_stack() const;
 
-	void process_operation();
+	Value extract_value_from_stack();
+
+	Value read_current_value_symbol() const;
+
+	void process_operation(OperationType);
 };
 } // namespace model

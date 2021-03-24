@@ -3,7 +3,6 @@
 #include "util/Exception.hpp"
 #include <variant>
 #include <vector>
-#include <iostream>
 
 namespace model
 {
@@ -16,16 +15,6 @@ int execute_operation(OperationType type, int v1, int v2)
 		case OperationType::ADDITION: return v1 + v2;
 		case OperationType::MULTIPLICATION: return v1 * v2;
 	}
-}
-
-bool is_value(const SymbolVariant& variant)
-{
-	return std::holds_alternative<Value>(variant);
-}
-
-bool is_operation_type(const SymbolVariant& variant)
-{
-	return std::holds_alternative<OperationType>(variant);
 }
 } // namespace
 
@@ -43,11 +32,25 @@ OperationResult Calculator::calculate_next()
 		throw util::BadAccessException{"Calculator has no more symbols!"};
 	}
 
-	extract_and_insert_values();
+	while (not has_finished() and is_value(current_iterator->data))
+	{
+		const auto value = read_current_value_symbol();
+		value_stack.push(value);
+		std::advance(current_iterator, 1);
+	}
 
-	process_operation();
+	if (not has_finished())
+	{
+		if (const auto& variant = current_iterator->data; is_operation_type(variant))
+		{
+			const auto operation_type = get_operation_type(variant);
+			process_operation(operation_type);
+			std::advance(current_iterator, 1);
+		}
+	}
 
-	return value_stack.top();
+
+	return read_value_from_stack();
 }
 
 bool Calculator::has_finished() const
@@ -55,39 +58,36 @@ bool Calculator::has_finished() const
 	return current_iterator == symbols.end();
 }
 
-void Calculator::extract_and_insert_values()
+Value Calculator::read_value_from_stack() const
 {
-	const auto has_more_value_symbols = [this](){ return not has_finished() and is_value(current_iterator->data); };
-
-	while (has_more_value_symbols())
-	{
-		const auto& variant = current_iterator->data;
-		const auto value = std::get<Value>(variant);
-		value_stack.push(value);
-		std::advance(current_iterator, 1);
-	}
+	return value_stack.top();
 }
 
-void Calculator::process_operation()
+Value Calculator::extract_value_from_stack()
 {
-	if (not has_finished())
-	{
-		if (const auto& variant = current_iterator->data; is_operation_type(variant))
-		{
-			if (value_stack.size() < 2)
-			{
-				throw util::InputErrorException{"RPN input error - not enough values required for operation!"};
-			}
+	const auto output = read_value_from_stack();
+	value_stack.pop();
+	return output;
+}
 
-			const auto operation_type = std::get<OperationType>(variant);
-			const auto value1 = value_stack.top();
-			value_stack.pop();
-			const auto value2 = value_stack.top();
-			value_stack.pop();
-			const auto result = execute_operation(operation_type, value2, value1);
-			value_stack.push(result);
-		}
-		std::advance(current_iterator, 1);
+Value Calculator::read_current_value_symbol() const
+{
+	const auto& variant = current_iterator->data;
+	const auto value = get_value(variant);
+	return value;
+}
+
+void Calculator::process_operation(OperationType operation_type)
+{
+	if (value_stack.size() < 2)
+	{
+		throw util::InputErrorException{"Wrong RPN input - not enough values required for operation!"};
 	}
+
+	const auto value1 = extract_value_from_stack();
+	const auto value2 = extract_value_from_stack();
+
+	const auto result = execute_operation(operation_type, value2, value1);
+	value_stack.push(result);
 }
 } // namespace model
