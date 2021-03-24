@@ -1,3 +1,4 @@
+#include "math/Value.hpp"
 #include "model/Calculator.hpp"
 #include "util/Exception.hpp"
 #include <gtest/gtest.h>
@@ -10,6 +11,8 @@ using namespace model;
 
 namespace
 {
+using Value = math::Value;
+
 void expect_results(Calculator& sut, std::initializer_list<Value> expected_results, std::string_view input_info)
 {
 	for (const auto& expected : expected_results)

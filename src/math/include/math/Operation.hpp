@@ -1,10 +1,10 @@
 #pragma once
 
+#include "math/Value.hpp"
 #include <functional>
 
 namespace math
 {
-using Value = int;
 using OperationFunction = std::function<Value (Value, Value)>;
 
 Value addition(Value, Value);

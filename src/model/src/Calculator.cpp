@@ -1,3 +1,4 @@
+#include "math/Operation.hpp"
 #include "model/Calculator.hpp"
 #include "model/Symbol.hpp"
 #include "util/Exception.hpp"
@@ -8,16 +9,17 @@ namespace model
 {
 namespace
 {
-int execute_operation(OperationType type, int v1, int v2)
+math::OperationFunction convert_operation(OperationType type)
 {
 	switch (type)
 	{
-		case OperationType::ADDITION: return v1 + v2;
-		case OperationType::MULTIPLICATION: return v1 * v2;
+		case OperationType::ADDITION: return math::addition;
+		case OperationType::MULTIPLICATION: return math::multiplication;
 	}
 }
 } // namespace
 
+using Value = math::Value;
 using OperationResult = Calculator::OperationResult;
 
 Calculator::Calculator(std::vector<Symbol> input) : 
@@ -87,7 +89,8 @@ void Calculator::process_operation(OperationType operation_type)
 	const auto value1 = extract_value_from_stack();
 	const auto value2 = extract_value_from_stack();
 
-	const auto result = execute_operation(operation_type, value2, value1);
+	const auto operation = convert_operation(operation_type);
+	const auto result = operation(value1, value2);
 	value_stack.push(result);
 }
 } // namespace model

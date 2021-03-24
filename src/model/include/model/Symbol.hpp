@@ -1,5 +1,7 @@
 #pragma once
 
+#include "math/Value.hpp"
+#include <vector>
 #include <variant>
 
 namespace model
@@ -10,20 +12,19 @@ enum class OperationType
 	MULTIPLICATION
 };
 
-using Value = int;
-
-using SymbolVariant = std::variant<Value, OperationType>;
-
 struct Symbol
 {
-	const SymbolVariant data;
+	using Variant = std::variant<math::Value, OperationType>;
+	const Variant data;
 };
 
-bool is_value(const SymbolVariant&);
+using Symbols = std::vector<Symbol>;
 
-bool is_operation_type(const SymbolVariant&);
+bool is_value(const Symbol::Variant&);
 
-OperationType get_operation_type(const SymbolVariant&);
+bool is_operation_type(const Symbol::Variant&);
 
-Value get_value(const SymbolVariant&);
+OperationType get_operation_type(const Symbol::Variant&);
+
+math::Value get_value(const Symbol::Variant&);
 } // namespace model

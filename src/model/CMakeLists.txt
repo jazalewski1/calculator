@@ -1,7 +1,9 @@
 set(
 	HEADERS
 	include/model/Calculator.hpp
+	include/model/InfixSymbol.hpp
 	include/model/Symbol.hpp
+	include/model/SymbolConverter.hpp
 )
 
 set(

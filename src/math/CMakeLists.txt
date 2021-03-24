@@ -1,6 +1,7 @@
 set(
 	HEADERS
 	include/math/Operation.hpp
+	include/math/Value.hpp
 )
 
 set(
