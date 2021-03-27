@@ -7,7 +7,9 @@ set(
 set(
 	SOURCES
 	src/Calculator.cpp
+	src/InfixSymbol.cpp
 	src/PostfixSymbol.cpp
+	src/InfixToPostfix.cpp
 )
 
 add_library(

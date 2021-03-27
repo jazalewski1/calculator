@@ -20,3 +20,14 @@ add_test_module(
 	model
 	util
 )
+
+add_test_module(
+	NAME InfixToPostfixTests
+	PATH model/InfixToPostfixTests.cpp
+	DEPENDS
+	gtest
+	gtest_main
+	gmock
+	model
+	util
+)
