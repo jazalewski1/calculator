@@ -25,7 +25,7 @@ void expect_results(Calculator& sut, std::initializer_list<Value> expected_resul
 
 TEST(CalculatorTests_Rpn, Empty_input_throws)
 {
-	std::vector<Symbol> input;
+	std::vector<PostfixSymbol> input;
 	Calculator sut{input};
 
 	EXPECT_THROW(sut.calculate_next(), util::BadAccessException);
@@ -34,9 +34,9 @@ TEST(CalculatorTests_Rpn, Empty_input_throws)
 
 TEST(CalculatorTests_Rpn, Single_value_returns_that_value)
 {
-	std::vector<Symbol> input
+	std::vector<PostfixSymbol> input
 	{
-		Symbol{Value{42}}
+		PostfixSymbol{Value{42}}
 	};
 	Calculator sut{input};
 
@@ -48,11 +48,11 @@ TEST(CalculatorTests_Rpn, Single_value_returns_that_value)
 
 TEST(CalculatorTests_Rpn, Addition)
 {
-	std::vector<Symbol> input
+	std::vector<PostfixSymbol> input
 	{
-		Symbol{Value{42}},
-		Symbol{Value{69}},
-		Symbol{OperationType::ADDITION},
+		PostfixSymbol{Value{42}},
+		PostfixSymbol{Value{69}},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
 	};
 	Calculator sut{input};
 
@@ -64,15 +64,15 @@ TEST(CalculatorTests_Rpn, Addition)
 
 TEST(CalculatorTests_Rpn, Addition_four_times_in_a_row)
 {
-	std::vector<Symbol> input
+	std::vector<PostfixSymbol> input
 	{
-		Symbol{Value{42}},
-		Symbol{Value{69}},
-		Symbol{OperationType::ADDITION},
-		Symbol{Value{17}},
-		Symbol{OperationType::ADDITION},
-		Symbol{Value{128}},
-		Symbol{OperationType::ADDITION}
+		PostfixSymbol{Value{42}},
+		PostfixSymbol{Value{69}},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{Value{17}},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{Value{128}},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION}
 	};
 	Calculator sut{input};
 
@@ -84,13 +84,13 @@ TEST(CalculatorTests_Rpn, Addition_four_times_in_a_row)
 
 TEST(CalculatorTests_Rpn, Multiplication_addition)
 {
-	std::vector<Symbol> input
+	std::vector<PostfixSymbol> input
 	{
-		Symbol{Value{2}},
-		Symbol{Value{3}},
-		Symbol{OperationType::MULTIPLICATION},
-		Symbol{Value{5}},
-		Symbol{OperationType::ADDITION},
+		PostfixSymbol{Value{2}},
+		PostfixSymbol{Value{3}},
+		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{Value{5}},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
 	};
 
 	Calculator sut{input};
@@ -101,13 +101,13 @@ TEST(CalculatorTests_Rpn, Multiplication_addition)
 
 TEST(CalculatorTests_Rpn, Addition_multiplication)
 {
-	std::vector<Symbol> input
+	std::vector<PostfixSymbol> input
 	{
-		Symbol{Value{2}},
-		Symbol{Value{3}},
-		Symbol{Value{5}},
-		Symbol{OperationType::MULTIPLICATION},
-		Symbol{OperationType::ADDITION},
+		PostfixSymbol{Value{2}},
+		PostfixSymbol{Value{3}},
+		PostfixSymbol{Value{5}},
+		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
 	};
 	Calculator sut{input};
 
@@ -117,15 +117,15 @@ TEST(CalculatorTests_Rpn, Addition_multiplication)
 
 TEST(CalculatorTests_Rpn, Multiplication_multiplication_addition)
 {
-	std::vector<Symbol> input
+	std::vector<PostfixSymbol> input
 	{
-		Symbol{Value{2}},
-		Symbol{Value{3}},
-		Symbol{OperationType::MULTIPLICATION},
-		Symbol{Value{4}},
-		Symbol{OperationType::MULTIPLICATION},
-		Symbol{Value{5}},
-		Symbol{OperationType::ADDITION},
+		PostfixSymbol{Value{2}},
+		PostfixSymbol{Value{3}},
+		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{Value{4}},
+		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{Value{5}},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
 	};
 
 	Calculator sut{input};
@@ -136,15 +136,15 @@ TEST(CalculatorTests_Rpn, Multiplication_multiplication_addition)
 
 TEST(CalculatorTests_Rpn, Multiplication_addition_multiplication)
 {
-	std::vector<Symbol> input
+	std::vector<PostfixSymbol> input
 	{
-		Symbol{Value{2}},
-		Symbol{Value{3}},
-		Symbol{OperationType::MULTIPLICATION},
-		Symbol{Value{4}},
-		Symbol{Value{5}},
-		Symbol{OperationType::MULTIPLICATION},
-		Symbol{OperationType::ADDITION},
+		PostfixSymbol{Value{2}},
+		PostfixSymbol{Value{3}},
+		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{Value{4}},
+		PostfixSymbol{Value{5}},
+		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
 	};
 
 	Calculator sut{input};
@@ -155,15 +155,15 @@ TEST(CalculatorTests_Rpn, Multiplication_addition_multiplication)
 
 TEST(CalculatorTests_Rpn, Addition_multiplication_multiplication)
 {
-	std::vector<Symbol> input
+	std::vector<PostfixSymbol> input
 	{
-		Symbol{Value{2}},
-		Symbol{Value{3}},
-		Symbol{Value{4}},
-		Symbol{OperationType::MULTIPLICATION},
-		Symbol{Value{5}},
-		Symbol{OperationType::MULTIPLICATION},
-		Symbol{OperationType::ADDITION},
+		PostfixSymbol{Value{2}},
+		PostfixSymbol{Value{3}},
+		PostfixSymbol{Value{4}},
+		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{Value{5}},
+		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
 	};
 
 	Calculator sut{input};
@@ -174,15 +174,15 @@ TEST(CalculatorTests_Rpn, Addition_multiplication_multiplication)
 
 TEST(CalculatorTests_Rpn, Addition_addition_multiplication)
 {
-	std::vector<Symbol> input
+	std::vector<PostfixSymbol> input
 	{
-		Symbol{Value{2}},
-		Symbol{Value{3}},
-		Symbol{OperationType::ADDITION},
-		Symbol{Value{4}},
-		Symbol{Value{5}},
-		Symbol{OperationType::MULTIPLICATION},
-		Symbol{OperationType::ADDITION},
+		PostfixSymbol{Value{2}},
+		PostfixSymbol{Value{3}},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{Value{4}},
+		PostfixSymbol{Value{5}},
+		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
 	};
 
 	Calculator sut{input};
@@ -193,15 +193,15 @@ TEST(CalculatorTests_Rpn, Addition_addition_multiplication)
 
 TEST(CalculatorTests_Rpn, Addition_multiplication_addition)
 {
-	std::vector<Symbol> input
+	std::vector<PostfixSymbol> input
 	{
-		Symbol{Value{2}},
-		Symbol{Value{3}},
-		Symbol{Value{4}},
-		Symbol{OperationType::MULTIPLICATION},
-		Symbol{OperationType::ADDITION},
-		Symbol{Value{5}},
-		Symbol{OperationType::ADDITION},
+		PostfixSymbol{Value{2}},
+		PostfixSymbol{Value{3}},
+		PostfixSymbol{Value{4}},
+		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{Value{5}},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
 	};
 
 	Calculator sut{input};
@@ -212,15 +212,15 @@ TEST(CalculatorTests_Rpn, Addition_multiplication_addition)
 
 TEST(CalculatorTests_Rpn, Multiplication_addition_addition)
 {
-	std::vector<Symbol> input
+	std::vector<PostfixSymbol> input
 	{
-		Symbol{Value{2}},
-		Symbol{Value{3}},
-		Symbol{OperationType::MULTIPLICATION},
-		Symbol{Value{4}},
-		Symbol{OperationType::ADDITION},
-		Symbol{Value{5}},
-		Symbol{OperationType::ADDITION},
+		PostfixSymbol{Value{2}},
+		PostfixSymbol{Value{3}},
+		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{Value{4}},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{Value{5}},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
 	};
 
 	Calculator sut{input};
@@ -231,16 +231,16 @@ TEST(CalculatorTests_Rpn, Multiplication_addition_addition)
 
 TEST(CalculatorTests_Rpn, Wrong_input_with_not_enough_values_for_last_operation)
 {
-	std::vector<Symbol> input
+	std::vector<PostfixSymbol> input
 	{
-		Symbol{Value{2}},
-		Symbol{Value{3}},
-		Symbol{Value{4}},
-		Symbol{OperationType::MULTIPLICATION},
-		Symbol{Value{5}},
-		Symbol{OperationType::ADDITION},
-		Symbol{OperationType::ADDITION},
-		Symbol{OperationType::MULTIPLICATION},
+		PostfixSymbol{Value{2}},
+		PostfixSymbol{Value{3}},
+		PostfixSymbol{Value{4}},
+		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{Value{5}},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
 	};
 
 	Calculator sut{input};

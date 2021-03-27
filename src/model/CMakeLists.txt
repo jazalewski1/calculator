@@ -1,13 +1,13 @@
 set(
 	HEADERS
 	include/model/Calculator.hpp
-	include/model/Symbol.hpp
+	include/model/PostfixSymbol.hpp
 )
 
 set(
 	SOURCES
 	src/Calculator.cpp
-	src/Symbol.cpp
+	src/PostfixSymbol.cpp
 )
 
 add_library(

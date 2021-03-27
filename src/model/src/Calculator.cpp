@@ -1,6 +1,6 @@
 #include "math/Operation.hpp"
 #include "model/Calculator.hpp"
-#include "model/Symbol.hpp"
+#include "model/PostfixSymbol.hpp"
 #include "util/Exception.hpp"
 #include <variant>
 #include <vector>
@@ -9,12 +9,12 @@ namespace model
 {
 namespace
 {
-math::OperationFunction convert_operation(OperationType type)
+math::OperationFunction convert_operation(PostfixSymbol::Type type)
 {
 	switch (type)
 	{
-		case OperationType::ADDITION: return math::addition;
-		case OperationType::MULTIPLICATION: return math::multiplication;
+		case PostfixSymbol::Type::ADDITION: return math::addition;
+		case PostfixSymbol::Type::MULTIPLICATION: return math::multiplication;
 	}
 }
 } // namespace
@@ -22,7 +22,7 @@ math::OperationFunction convert_operation(OperationType type)
 using Value = math::Value;
 using OperationResult = Calculator::OperationResult;
 
-Calculator::Calculator(std::vector<Symbol> input) : 
+Calculator::Calculator(std::vector<PostfixSymbol> input) : 
 	symbols{input}, current_iterator{symbols.begin()}
 {
 }
@@ -45,7 +45,7 @@ OperationResult Calculator::calculate_next()
 	{
 		if (const auto& symbol = *current_iterator; is_operation_type(symbol))
 		{
-			const auto operation_type = get_operation_type(symbol);
+			const auto operation_type = get_type(symbol);
 			process_operation(operation_type);
 			std::advance(current_iterator, 1);
 		}
@@ -78,7 +78,7 @@ Value Calculator::read_current_value_symbol() const
 	return value;
 }
 
-void Calculator::process_operation(OperationType operation_type)
+void Calculator::process_operation(PostfixSymbol::Type operation_type)
 {
 	if (value_stack.size() < 2)
 	{
