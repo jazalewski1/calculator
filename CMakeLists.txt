@@ -10,6 +10,8 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 enable_testing()
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror=switch")
+
 set(CMAKE_UTILITIES ${PROJECT_SOURCE_DIR}/cmake)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(TEST_EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/test)
