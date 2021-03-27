@@ -34,7 +34,7 @@ OperationResult Calculator::calculate_next()
 		throw util::BadAccessException{"Calculator has no more symbols!"};
 	}
 
-	while (not has_finished() and is_value(current_iterator->data))
+	while (not has_finished() and is_value(*current_iterator))
 	{
 		const auto value = read_current_value_symbol();
 		value_stack.push(value);
@@ -43,9 +43,9 @@ OperationResult Calculator::calculate_next()
 
 	if (not has_finished())
 	{
-		if (const auto& variant = current_iterator->data; is_operation_type(variant))
+		if (const auto& symbol = *current_iterator; is_operation_type(symbol))
 		{
-			const auto operation_type = get_operation_type(variant);
+			const auto operation_type = get_operation_type(symbol);
 			process_operation(operation_type);
 			std::advance(current_iterator, 1);
 		}
@@ -74,8 +74,7 @@ Value Calculator::extract_value_from_stack()
 
 Value Calculator::read_current_value_symbol() const
 {
-	const auto& variant = current_iterator->data;
-	const auto value = get_value(variant);
+	const auto value = get_value(*current_iterator);
 	return value;
 }
 

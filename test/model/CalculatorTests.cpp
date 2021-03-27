@@ -41,7 +41,8 @@ TEST(CalculatorTests_Rpn, Single_value_returns_that_value)
 	Calculator sut{input};
 
 	EXPECT_FALSE(sut.has_finished());
-	expect_results(sut, {42}, "42");
+	const auto expected_results = {42};
+	expect_results(sut, expected_results, "42");
 	EXPECT_TRUE(sut.has_finished());
 }
 
@@ -56,7 +57,8 @@ TEST(CalculatorTests_Rpn, Addition)
 	Calculator sut{input};
 
 	EXPECT_FALSE(sut.has_finished());
-	expect_results(sut, {111}, "42 + 69");
+	const auto expected_results = {111};
+	expect_results(sut, expected_results, "42 + 69");
 	EXPECT_TRUE(sut.has_finished());
 }
 
@@ -66,20 +68,21 @@ TEST(CalculatorTests_Rpn, Addition_four_times_in_a_row)
 	{
 		Symbol{Value{42}},
 		Symbol{Value{69}},
+		Symbol{OperationType::ADDITION},
 		Symbol{Value{17}},
+		Symbol{OperationType::ADDITION},
 		Symbol{Value{128}},
-		Symbol{OperationType::ADDITION},
-		Symbol{OperationType::ADDITION},
-		Symbol{OperationType::ADDITION},
+		Symbol{OperationType::ADDITION}
 	};
 	Calculator sut{input};
 
 	EXPECT_FALSE(sut.has_finished());
-	expect_results(sut, {145, 214, 256}, "42 + 69 + 17 + 128");
+	const auto expected_results = {111, 128, 256};
+	expect_results(sut, expected_results, "42 + 69 + 17 + 128");
 	EXPECT_TRUE(sut.has_finished());
 }
 
-TEST(CalculatorTests_Rpn, Multiplication_before_addition_when_multiplication_is_first)
+TEST(CalculatorTests_Rpn, Multiplication_addition)
 {
 	std::vector<Symbol> input
 	{
@@ -92,10 +95,11 @@ TEST(CalculatorTests_Rpn, Multiplication_before_addition_when_multiplication_is_
 
 	Calculator sut{input};
 
-	expect_results(sut, {6, 11}, "2 * 3 + 5");
+	const auto expected_results = {6, 11};
+	expect_results(sut, expected_results, "2 * 3 + 5");
 }
 
-TEST(CalculatorTests_Rpn, Multiplication_before_addition_when_addition_is_first)
+TEST(CalculatorTests_Rpn, Addition_multiplication)
 {
 	std::vector<Symbol> input
 	{
@@ -107,23 +111,27 @@ TEST(CalculatorTests_Rpn, Multiplication_before_addition_when_addition_is_first)
 	};
 	Calculator sut{input};
 
-	expect_results(sut, {15, 17}, "2 + 3 * 5");
+	const auto expected_results = {15, 17};
+	expect_results(sut, expected_results, "2 + 3 * 5");
 }
 
-TEST(CalculatorTests_Rpn, Addition_in_parentheses_before_multiplication)
+TEST(CalculatorTests_Rpn, Multiplication_multiplication_addition)
 {
 	std::vector<Symbol> input
 	{
 		Symbol{Value{2}},
 		Symbol{Value{3}},
-		Symbol{OperationType::ADDITION},
-		Symbol{Value{5}},
 		Symbol{OperationType::MULTIPLICATION},
+		Symbol{Value{4}},
+		Symbol{OperationType::MULTIPLICATION},
+		Symbol{Value{5}},
+		Symbol{OperationType::ADDITION},
 	};
 
 	Calculator sut{input};
 
-	expect_results(sut, {5, 25}, "(2 + 3) * 5");
+	const auto expected_results = {6, 24, 29};
+	expect_results(sut, expected_results, "2 * 3 * 4 + 5");
 }
 
 TEST(CalculatorTests_Rpn, Multiplication_addition_multiplication)
@@ -141,7 +149,46 @@ TEST(CalculatorTests_Rpn, Multiplication_addition_multiplication)
 
 	Calculator sut{input};
 
-	expect_results(sut, {6, 20, 26}, "2 * 3 + 4 * 5");
+	const auto expected_results = {6, 20, 26};
+	expect_results(sut, expected_results, "2 * 3 + 4 * 5");
+}
+
+TEST(CalculatorTests_Rpn, Addition_multiplication_multiplication)
+{
+	std::vector<Symbol> input
+	{
+		Symbol{Value{2}},
+		Symbol{Value{3}},
+		Symbol{Value{4}},
+		Symbol{OperationType::MULTIPLICATION},
+		Symbol{Value{5}},
+		Symbol{OperationType::MULTIPLICATION},
+		Symbol{OperationType::ADDITION},
+	};
+
+	Calculator sut{input};
+
+	const auto expected_results = {12, 60, 62};
+	expect_results(sut, expected_results, "2 + 3 * 4 * 5");
+}
+
+TEST(CalculatorTests_Rpn, Addition_addition_multiplication)
+{
+	std::vector<Symbol> input
+	{
+		Symbol{Value{2}},
+		Symbol{Value{3}},
+		Symbol{OperationType::ADDITION},
+		Symbol{Value{4}},
+		Symbol{Value{5}},
+		Symbol{OperationType::MULTIPLICATION},
+		Symbol{OperationType::ADDITION},
+	};
+
+	Calculator sut{input};
+
+	const auto expected_results = {5, 20, 25};
+	expect_results(sut, expected_results, "2 + 3 + 4 * 5");
 }
 
 TEST(CalculatorTests_Rpn, Addition_multiplication_addition)
@@ -152,17 +199,37 @@ TEST(CalculatorTests_Rpn, Addition_multiplication_addition)
 		Symbol{Value{3}},
 		Symbol{Value{4}},
 		Symbol{OperationType::MULTIPLICATION},
-		Symbol{Value{5}},
 		Symbol{OperationType::ADDITION},
+		Symbol{Value{5}},
 		Symbol{OperationType::ADDITION},
 	};
 
 	Calculator sut{input};
 
-	expect_results(sut, {12, 17, 19}, "2 + 3 * 4 + 5");
+	const auto expected_results = {12, 14, 19};
+	expect_results(sut, expected_results, "2 + 3 * 4 + 5");
 }
 
-TEST(CalculatorTests_Rpn, Wrong_input_with_not_enough_values_for_last_operations)
+TEST(CalculatorTests_Rpn, Multiplication_addition_addition)
+{
+	std::vector<Symbol> input
+	{
+		Symbol{Value{2}},
+		Symbol{Value{3}},
+		Symbol{OperationType::MULTIPLICATION},
+		Symbol{Value{4}},
+		Symbol{OperationType::ADDITION},
+		Symbol{Value{5}},
+		Symbol{OperationType::ADDITION},
+	};
+
+	Calculator sut{input};
+
+	const auto expected_results = {6, 10, 15};
+	expect_results(sut, expected_results, "2 * 3 + 4 + 5");
+}
+
+TEST(CalculatorTests_Rpn, Wrong_input_with_not_enough_values_for_last_operation)
 {
 	std::vector<Symbol> input
 	{
