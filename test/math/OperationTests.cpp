@@ -12,6 +12,18 @@ TEST(OperationTests, Addition)
 	EXPECT_EQ(expected, result);
 }
 
+TEST(OperationTests, Subtraction)
+{
+	constexpr math::Value value1{69};
+	constexpr math::Value value2{42};
+
+	constexpr auto expected = 27;
+	const auto result = math::subtraction(value1, value2);
+
+	EXPECT_EQ(expected, result);
+}
+
+
 TEST(OperationTests, Multiplication)
 {
 	constexpr math::Value value1{69};

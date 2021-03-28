@@ -9,5 +9,7 @@ using OperationFunction = std::function<Value (Value, Value)>;
 
 Value addition(Value, Value);
 
+Value subtraction(Value, Value);
+
 Value multiplication(Value, Value);
 } // namespace math

@@ -6,12 +6,12 @@
 
 namespace model
 {
-
 struct PostfixSymbol
 {
 	enum class Type
 	{
 		ADDITION,
+		SUBTRACTION,
 		MULTIPLICATION
 	};
 

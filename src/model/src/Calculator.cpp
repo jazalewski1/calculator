@@ -14,6 +14,7 @@ math::OperationFunction convert_operation(PostfixSymbol::Type type)
 	switch (type)
 	{
 		case PostfixSymbol::Type::ADDITION: return math::addition;
+		case PostfixSymbol::Type::SUBTRACTION: return math::subtraction;
 		case PostfixSymbol::Type::MULTIPLICATION: return math::multiplication;
 	}
 }
@@ -89,7 +90,7 @@ void Calculator::process_operation(PostfixSymbol::Type operation_type)
 	const auto value2 = extract_value_from_stack();
 
 	const auto operation = convert_operation(operation_type);
-	const auto result = operation(value1, value2);
+	const auto result = operation(value2, value1);
 	value_stack.push(result);
 }
 } // namespace model

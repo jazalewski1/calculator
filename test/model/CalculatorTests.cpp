@@ -82,6 +82,40 @@ TEST(CalculatorTests_Rpn, Addition_four_times_in_a_row)
 	EXPECT_TRUE(sut.has_finished());
 }
 
+TEST(CalculatorTests_Rpn, Addition_subtraction)
+{
+	std::vector<PostfixSymbol> input
+	{
+		PostfixSymbol{Value{42}},
+		PostfixSymbol{Value{69}},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{Value{11}},
+		PostfixSymbol{PostfixSymbol::Type::SUBTRACTION},
+	};
+
+	Calculator sut{input};
+
+	const auto expected_results = {111, 100};
+	expect_results(sut, expected_results, "42 + 69 - 11");
+}
+
+TEST(CalculatorTests_Rpn, Subtraction_addition)
+{
+	std::vector<PostfixSymbol> input
+	{
+		PostfixSymbol{Value{69}},
+		PostfixSymbol{Value{42}},
+		PostfixSymbol{PostfixSymbol::Type::SUBTRACTION},
+		PostfixSymbol{Value{23}},
+		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+	};
+
+	Calculator sut{input};
+
+	const auto expected_results = {27, 50};
+	expect_results(sut, expected_results, "69 - 42 + 23");
+}
+
 TEST(CalculatorTests_Rpn, Multiplication_addition)
 {
 	std::vector<PostfixSymbol> input

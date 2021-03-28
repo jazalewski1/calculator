@@ -25,6 +25,7 @@ std::ostream& operator<<(std::ostream& stream, const PostfixSymbol::Type& symbol
 	switch (symbol)
 	{
 		case PostfixSymbol::Type::ADDITION: return stream << "addition";
+		case PostfixSymbol::Type::SUBTRACTION: return stream << "subtraction";
 		case PostfixSymbol::Type::MULTIPLICATION: return stream << "multiplication";
 	}
 	return stream << "unknown";
@@ -124,7 +125,7 @@ TEST(InfixToPostfixTests, Addition_four_times_in_a_row)
 	);
 }
 
-TEST(InfixToPostfixTests, Multiplication_before_addition_when_multiplication_is_first)
+TEST(InfixToPostfixTests, Multiplication_addition)
 {
 	const InfixSymbols input {
 		InfixSymbol{Value{2}},
@@ -148,7 +149,7 @@ TEST(InfixToPostfixTests, Multiplication_before_addition_when_multiplication_is_
 	);
 }
 
-TEST(InfixToPostfixTests, Multiplication_before_addition_when_addition_is_first)
+TEST(InfixToPostfixTests, Addition_multiplication)
 {
 	const InfixSymbols input {
 		InfixSymbol{Value{2}},
@@ -224,6 +225,82 @@ TEST(InfixToPostfixTests, Addition_multiplication_addition)
 			PostfixSymbol{PostfixSymbol::Type::ADDITION},
 			PostfixSymbol{Value{5}},
 			PostfixSymbol{PostfixSymbol::Type::ADDITION}
+		)
+	);
+}
+
+TEST(InfixToPostfixTests, Addition_subtraction)
+{
+	const InfixSymbols input {
+		InfixSymbol{Value{2}},
+		InfixSymbol{InfixSymbol::Type::ADDITION},
+		InfixSymbol{Value{3}},
+		InfixSymbol{InfixSymbol::Type::SUBTRACTION},
+		InfixSymbol{Value{4}},
+	};
+	
+	const auto result = infix_to_postfix(input);
+
+	EXPECT_THAT(
+		result,
+		ElementsAre(
+			PostfixSymbol{Value{2}},
+			PostfixSymbol{Value{3}},
+			PostfixSymbol{PostfixSymbol::Type::ADDITION},
+			PostfixSymbol{Value{4}},
+			PostfixSymbol{PostfixSymbol::Type::SUBTRACTION}
+		)
+	);
+}
+
+TEST(InfixToPostfixTests, Subtraction_addition)
+{
+	const InfixSymbols input {
+		InfixSymbol{Value{2}},
+		InfixSymbol{InfixSymbol::Type::SUBTRACTION},
+		InfixSymbol{Value{3}},
+		InfixSymbol{InfixSymbol::Type::ADDITION},
+		InfixSymbol{Value{4}},
+	};
+	
+	const auto result = infix_to_postfix(input);
+
+	EXPECT_THAT(
+		result,
+		ElementsAre(
+			PostfixSymbol{Value{2}},
+			PostfixSymbol{Value{3}},
+			PostfixSymbol{PostfixSymbol::Type::SUBTRACTION},
+			PostfixSymbol{Value{4}},
+			PostfixSymbol{PostfixSymbol::Type::ADDITION}
+		)
+	);
+}
+
+TEST(InfixToPostfixTests, Addition_multiplication_subtraction)
+{
+	const InfixSymbols input {
+		InfixSymbol{Value{2}},
+		InfixSymbol{InfixSymbol::Type::ADDITION},
+		InfixSymbol{Value{3}},
+		InfixSymbol{InfixSymbol::Type::MULTIPLICATION},
+		InfixSymbol{Value{4}},
+		InfixSymbol{InfixSymbol::Type::SUBTRACTION},
+		InfixSymbol{Value{5}},
+	};
+	
+	const auto result = infix_to_postfix(input);
+
+	EXPECT_THAT(
+		result,
+		ElementsAre(
+			PostfixSymbol{Value{2}},
+			PostfixSymbol{Value{3}},
+			PostfixSymbol{Value{4}},
+			PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+			PostfixSymbol{PostfixSymbol::Type::ADDITION},
+			PostfixSymbol{Value{5}},
+			PostfixSymbol{PostfixSymbol::Type::SUBTRACTION}
 		)
 	);
 }

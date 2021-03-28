@@ -6,13 +6,12 @@
 
 namespace model
 {
-
-
 struct InfixSymbol
 {
 	enum class Type
 	{
 		ADDITION,
+		SUBTRACTION,
 		MULTIPLICATION,
 	};
 
