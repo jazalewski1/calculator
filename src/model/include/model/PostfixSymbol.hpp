@@ -10,8 +10,9 @@ struct PostfixSymbol
 {
 	enum class Type
 	{
-		ADDITION,
 		SUBTRACTION,
+		ADDITION,
+		DIVISION,
 		MULTIPLICATION
 	};
 

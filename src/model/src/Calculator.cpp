@@ -1,4 +1,5 @@
 #include "math/Operation.hpp"
+#include "math/Value.hpp"
 #include "model/Calculator.hpp"
 #include "model/PostfixSymbol.hpp"
 #include "util/Exception.hpp"
@@ -7,27 +8,30 @@
 
 namespace model
 {
+using Value = math::Value;
+
 namespace
 {
-math::OperationFunction convert_operation(PostfixSymbol::Type type)
+Value execute_operation(PostfixSymbol::Type type, const Value& lhs, const Value& rhs)
 {
+	const auto lhs_value = math::is_integer(lhs) ? math::get_integer(lhs) : math::get_double(lhs);
+	const auto rhs_value = math::is_integer(rhs) ? math::get_integer(rhs) : math::get_double(rhs);
 	switch (type)
 	{
-		case PostfixSymbol::Type::ADDITION: return math::addition;
-		case PostfixSymbol::Type::SUBTRACTION: return math::subtraction;
-		case PostfixSymbol::Type::MULTIPLICATION: return math::multiplication;
+		case PostfixSymbol::Type::SUBTRACTION: return math::subtraction(lhs_value, rhs_value);
+		case PostfixSymbol::Type::ADDITION: return math::addition(lhs_value, rhs_value);
+		case PostfixSymbol::Type::DIVISION: return math::division(lhs_value, rhs_value);
+		case PostfixSymbol::Type::MULTIPLICATION: return math::multiplication(lhs_value, rhs_value);
 	}
 }
 } // namespace
-
-using Value = math::Value;
-using OperationResult = Calculator::OperationResult;
 
 Calculator::Calculator(std::vector<PostfixSymbol> input) : 
 	symbols{input}, current_iterator{symbols.begin()}
 {
 }
 
+using OperationResult = Calculator::OperationResult;
 OperationResult Calculator::calculate_next()
 {
 	if (has_finished())
@@ -51,7 +55,6 @@ OperationResult Calculator::calculate_next()
 			std::advance(current_iterator, 1);
 		}
 	}
-
 
 	return read_value_from_stack();
 }
@@ -89,8 +92,7 @@ void Calculator::process_operation(PostfixSymbol::Type operation_type)
 	const auto value1 = extract_value_from_stack();
 	const auto value2 = extract_value_from_stack();
 
-	const auto operation = convert_operation(operation_type);
-	const auto result = operation(value2, value1);
+	const auto result = execute_operation(operation_type, value2, value1);
 	value_stack.push(result);
 }
 } // namespace model

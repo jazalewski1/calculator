@@ -12,7 +12,7 @@ class Calculator
 public:
 	Calculator(PostfixSymbols symbols);
 
-	using OperationResult = int;
+	using OperationResult = math::Value;
 	OperationResult calculate_next();
 
 	bool has_finished() const;

@@ -24,8 +24,9 @@ std::ostream& operator<<(std::ostream& stream, const PostfixSymbol::Type& symbol
 {
 	switch (symbol)
 	{
-		case PostfixSymbol::Type::ADDITION: return stream << "addition";
 		case PostfixSymbol::Type::SUBTRACTION: return stream << "subtraction";
+		case PostfixSymbol::Type::ADDITION: return stream << "addition";
+		case PostfixSymbol::Type::DIVISION: return stream << "division";
 		case PostfixSymbol::Type::MULTIPLICATION: return stream << "multiplication";
 	}
 	return stream << "unknown";
@@ -35,7 +36,8 @@ std::ostream& operator<<(std::ostream& stream, const PostfixSymbol& symbol)
 {
 	if (is_value(symbol))
 	{
-		return stream << "PostfixSymbol:" << get_value(symbol);
+		const auto value = get_value(symbol);
+		return stream << "PostfixSymbol:" << (math::is_integer(value) ? math::get_integer(value) : math::get_double(value));
 	}
 	return stream << "PostfixSymbol:" << get_type(symbol);
 }

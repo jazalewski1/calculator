@@ -10,9 +10,10 @@ struct InfixSymbol
 {
 	enum class Type
 	{
-		ADDITION,
 		SUBTRACTION,
-		MULTIPLICATION,
+		ADDITION,
+		DIVISION,
+		MULTIPLICATION
 	};
 
 	using Variant = std::variant<math::Value, Type>;

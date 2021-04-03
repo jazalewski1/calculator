@@ -6,7 +6,7 @@ set(
 
 set(
 	SOURCES
-	src/Operation.cpp
+	src/Value.cpp
 )
 
 add_library(

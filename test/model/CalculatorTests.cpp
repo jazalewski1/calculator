@@ -13,7 +13,7 @@ namespace
 {
 using Value = math::Value;
 
-void expect_results(Calculator& sut, std::initializer_list<Value> expected_results, std::string_view input_info)
+void expect_results(Calculator& sut, const std::initializer_list<Value>& expected_results, std::string_view input_info)
 {
 	for (const auto& expected : expected_results)
 	{
@@ -41,7 +41,7 @@ TEST(CalculatorTests_Rpn, Single_value_returns_that_value)
 	Calculator sut{input};
 
 	EXPECT_FALSE(sut.has_finished());
-	const auto expected_results = {42};
+	const auto expected_results = {Value{42}};
 	expect_results(sut, expected_results, "42");
 	EXPECT_TRUE(sut.has_finished());
 }
@@ -57,7 +57,7 @@ TEST(CalculatorTests_Rpn, Addition)
 	Calculator sut{input};
 
 	EXPECT_FALSE(sut.has_finished());
-	const auto expected_results = {111};
+	const auto expected_results = {Value{111}};
 	expect_results(sut, expected_results, "42 + 69");
 	EXPECT_TRUE(sut.has_finished());
 }
@@ -77,7 +77,7 @@ TEST(CalculatorTests_Rpn, Addition_four_times_in_a_row)
 	Calculator sut{input};
 
 	EXPECT_FALSE(sut.has_finished());
-	const auto expected_results = {111, 128, 256};
+	const auto expected_results = {Value{111}, Value{128}, Value{256}};
 	expect_results(sut, expected_results, "42 + 69 + 17 + 128");
 	EXPECT_TRUE(sut.has_finished());
 }
@@ -95,7 +95,7 @@ TEST(CalculatorTests_Rpn, Addition_subtraction)
 
 	Calculator sut{input};
 
-	const auto expected_results = {111, 100};
+	const auto expected_results = {Value{111}, Value{100}};
 	expect_results(sut, expected_results, "42 + 69 - 11");
 }
 
@@ -112,7 +112,7 @@ TEST(CalculatorTests_Rpn, Subtraction_addition)
 
 	Calculator sut{input};
 
-	const auto expected_results = {27, 50};
+	const auto expected_results = {Value{27}, Value{50}};
 	expect_results(sut, expected_results, "69 - 42 + 23");
 }
 
@@ -129,7 +129,7 @@ TEST(CalculatorTests_Rpn, Multiplication_addition)
 
 	Calculator sut{input};
 
-	const auto expected_results = {6, 11};
+	const auto expected_results = {Value{6}, Value{11}};
 	expect_results(sut, expected_results, "2 * 3 + 5");
 }
 
@@ -145,7 +145,7 @@ TEST(CalculatorTests_Rpn, Addition_multiplication)
 	};
 	Calculator sut{input};
 
-	const auto expected_results = {15, 17};
+	const auto expected_results = {Value{15}, Value{17}};
 	expect_results(sut, expected_results, "2 + 3 * 5");
 }
 
@@ -164,7 +164,7 @@ TEST(CalculatorTests_Rpn, Multiplication_multiplication_addition)
 
 	Calculator sut{input};
 
-	const auto expected_results = {6, 24, 29};
+	const auto expected_results = {Value{6}, Value{24}, Value{29}};
 	expect_results(sut, expected_results, "2 * 3 * 4 + 5");
 }
 
@@ -183,7 +183,7 @@ TEST(CalculatorTests_Rpn, Multiplication_addition_multiplication)
 
 	Calculator sut{input};
 
-	const auto expected_results = {6, 20, 26};
+	const auto expected_results = {Value{6}, Value{20}, Value{26}};
 	expect_results(sut, expected_results, "2 * 3 + 4 * 5");
 }
 
@@ -202,7 +202,7 @@ TEST(CalculatorTests_Rpn, Addition_multiplication_multiplication)
 
 	Calculator sut{input};
 
-	const auto expected_results = {12, 60, 62};
+	const auto expected_results = {Value{12}, Value{60}, Value{62}};
 	expect_results(sut, expected_results, "2 + 3 * 4 * 5");
 }
 
@@ -221,7 +221,7 @@ TEST(CalculatorTests_Rpn, Addition_addition_multiplication)
 
 	Calculator sut{input};
 
-	const auto expected_results = {5, 20, 25};
+	const auto expected_results = {Value{5}, Value{20}, Value{25}};
 	expect_results(sut, expected_results, "2 + 3 + 4 * 5");
 }
 
@@ -240,7 +240,7 @@ TEST(CalculatorTests_Rpn, Addition_multiplication_addition)
 
 	Calculator sut{input};
 
-	const auto expected_results = {12, 14, 19};
+	const auto expected_results = {Value{12}, Value{14}, Value{19}};
 	expect_results(sut, expected_results, "2 + 3 * 4 + 5");
 }
 
@@ -259,7 +259,7 @@ TEST(CalculatorTests_Rpn, Multiplication_addition_addition)
 
 	Calculator sut{input};
 
-	const auto expected_results = {6, 10, 15};
+	const auto expected_results = {Value{6}, Value{10}, Value{15}};
 	expect_results(sut, expected_results, "2 * 3 + 4 + 5");
 }
 

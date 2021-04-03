@@ -11,8 +11,9 @@ PostfixSymbol::Type convert(InfixSymbol::Type input)
 {
 	switch (input)
 	{
-		case InfixSymbol::Type::ADDITION: return PostfixSymbol::Type::ADDITION;
 		case InfixSymbol::Type::SUBTRACTION: return PostfixSymbol::Type::SUBTRACTION;
+		case InfixSymbol::Type::ADDITION: return PostfixSymbol::Type::ADDITION;
+		case InfixSymbol::Type::DIVISION: return PostfixSymbol::Type::DIVISION;
 		case InfixSymbol::Type::MULTIPLICATION: return PostfixSymbol::Type::MULTIPLICATION;
 	}
 }
@@ -21,8 +22,9 @@ int precedence(InfixSymbol::Type input)
 {
 	switch (input)
 	{
-		case InfixSymbol::Type::ADDITION: return 1;
 		case InfixSymbol::Type::SUBTRACTION: return 1;
+		case InfixSymbol::Type::ADDITION: return 1;
+		case InfixSymbol::Type::DIVISION: return 2;
 		case InfixSymbol::Type::MULTIPLICATION: return 2;
 	}
 }
