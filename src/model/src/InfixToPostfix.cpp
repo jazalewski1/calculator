@@ -7,29 +7,29 @@ namespace model
 {
 namespace
 {
-PostfixSymbol::Type convert(InfixSymbol::Type input)
+PostfixSymbol::Operator convert(InfixSymbol::Operator input)
 {
 	switch (input)
 	{
-		case InfixSymbol::Type::SUBTRACTION: return PostfixSymbol::Type::SUBTRACTION;
-		case InfixSymbol::Type::ADDITION: return PostfixSymbol::Type::ADDITION;
-		case InfixSymbol::Type::DIVISION: return PostfixSymbol::Type::DIVISION;
-		case InfixSymbol::Type::MULTIPLICATION: return PostfixSymbol::Type::MULTIPLICATION;
+		case InfixSymbol::Operator::SUBTRACTION: return PostfixSymbol::Operator::SUBTRACTION;
+		case InfixSymbol::Operator::ADDITION: return PostfixSymbol::Operator::ADDITION;
+		case InfixSymbol::Operator::DIVISION: return PostfixSymbol::Operator::DIVISION;
+		case InfixSymbol::Operator::MULTIPLICATION: return PostfixSymbol::Operator::MULTIPLICATION;
 	}
 }
 
-int precedence(InfixSymbol::Type input)
+int precedence(InfixSymbol::Operator input)
 {
 	switch (input)
 	{
-		case InfixSymbol::Type::SUBTRACTION: return 1;
-		case InfixSymbol::Type::ADDITION: return 1;
-		case InfixSymbol::Type::DIVISION: return 2;
-		case InfixSymbol::Type::MULTIPLICATION: return 2;
+		case InfixSymbol::Operator::SUBTRACTION: return 1;
+		case InfixSymbol::Operator::ADDITION: return 1;
+		case InfixSymbol::Operator::DIVISION: return 2;
+		case InfixSymbol::Operator::MULTIPLICATION: return 2;
 	}
 }
 
-bool should_top_be_moved(InfixSymbol::Type top, InfixSymbol::Type current)
+bool should_top_be_moved(InfixSymbol::Operator top, InfixSymbol::Operator current)
 {
 	const auto top_has_greater_precedence = precedence(top) > precedence(current);
 	const auto top_has_equal_precedence = precedence(top) == precedence(current);
@@ -40,7 +40,7 @@ bool should_top_be_moved(InfixSymbol::Type top, InfixSymbol::Type current)
 
 PostfixSymbols infix_to_postfix(const InfixSymbols& input)
 {
-	using Operator = InfixSymbol::Type; // FDEV: should be replaced with Operator type with precedence and associativity info
+	using Operator = InfixSymbol::Operator; // FDEV: should be replaced with Operator type with precedence and associativity info
 	PostfixSymbols output;
 	std::stack<Operator> operator_stack;
 
@@ -51,9 +51,9 @@ PostfixSymbols infix_to_postfix(const InfixSymbols& input)
 			const auto value = get_value(input_symbol);
 			output.emplace_back(PostfixSymbol{math::Value{value}});
 		}
-		else if (is_operation_type(input_symbol))
+		else if (is_operator(input_symbol))
 		{
-			const auto current_operator = get_type(input_symbol);
+			const auto current_operator = get_operator(input_symbol);
 			while (not operator_stack.empty())
 			{	
 				const auto top_operator = operator_stack.top();

@@ -13,21 +13,21 @@ inline bool operator==(const PostfixSymbol& lhs, const PostfixSymbol& rhs)
 	{
 		return get_value(lhs) == get_value(rhs);
 	}
-	else if (is_operation_type(lhs) and is_operation_type(rhs))
+	else if (is_operator(lhs) and is_operator(rhs))
 	{
-		return get_type(lhs) == get_type(rhs);
+		return get_operator(lhs) == get_operator(rhs);
 	}
 	return false;
 }
 
-std::ostream& operator<<(std::ostream& stream, const PostfixSymbol::Type& symbol)
+std::ostream& operator<<(std::ostream& stream, const PostfixSymbol::Operator& symbol)
 {
 	switch (symbol)
 	{
-		case PostfixSymbol::Type::SUBTRACTION: return stream << "subtraction";
-		case PostfixSymbol::Type::ADDITION: return stream << "addition";
-		case PostfixSymbol::Type::DIVISION: return stream << "division";
-		case PostfixSymbol::Type::MULTIPLICATION: return stream << "multiplication";
+		case PostfixSymbol::Operator::SUBTRACTION: return stream << "subtraction";
+		case PostfixSymbol::Operator::ADDITION: return stream << "addition";
+		case PostfixSymbol::Operator::DIVISION: return stream << "division";
+		case PostfixSymbol::Operator::MULTIPLICATION: return stream << "multiplication";
 	}
 	return stream << "unknown";
 }
@@ -39,7 +39,7 @@ std::ostream& operator<<(std::ostream& stream, const PostfixSymbol& symbol)
 		const auto value = get_value(symbol);
 		return stream << "PostfixSymbol:" << (math::is_integer(value) ? math::get_integer(value) : math::get_double(value));
 	}
-	return stream << "PostfixSymbol:" << get_type(symbol);
+	return stream << "PostfixSymbol:" << get_operator(symbol);
 }
 } // namespace model
 
@@ -83,7 +83,7 @@ TEST(InfixToPostfixTests, Value_addition_value)
 {
 	const InfixSymbols input {
 		InfixSymbol{Value{42}},
-		InfixSymbol{InfixSymbol::Type::ADDITION},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{69}},
 	};
 	
@@ -94,7 +94,7 @@ TEST(InfixToPostfixTests, Value_addition_value)
 		ElementsAre(
 			PostfixSymbol{Value{42}},
 			PostfixSymbol{Value{69}},
-			PostfixSymbol{PostfixSymbol::Type::ADDITION}
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
 		)
 	);
 }
@@ -103,11 +103,11 @@ TEST(InfixToPostfixTests, Addition_four_times_in_a_row)
 {
 	const InfixSymbols input {
 		InfixSymbol{Value{42}},
-		InfixSymbol{InfixSymbol::Type::ADDITION},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{69}},
-		InfixSymbol{InfixSymbol::Type::ADDITION},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{17}},
-		InfixSymbol{InfixSymbol::Type::ADDITION},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{128}},
 	};
 	
@@ -118,11 +118,11 @@ TEST(InfixToPostfixTests, Addition_four_times_in_a_row)
 		ElementsAre(
 			PostfixSymbol{Value{42}},
 			PostfixSymbol{Value{69}},
-			PostfixSymbol{PostfixSymbol::Type::ADDITION},
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 			PostfixSymbol{Value{17}},
-			PostfixSymbol{PostfixSymbol::Type::ADDITION},
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 			PostfixSymbol{Value{128}},
-			PostfixSymbol{PostfixSymbol::Type::ADDITION}
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
 		)
 	);
 }
@@ -131,9 +131,9 @@ TEST(InfixToPostfixTests, Multiplication_addition)
 {
 	const InfixSymbols input {
 		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Type::MULTIPLICATION},
+		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
 		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Type::ADDITION},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{5}},
 	};
 	
@@ -144,9 +144,9 @@ TEST(InfixToPostfixTests, Multiplication_addition)
 		ElementsAre(
 			PostfixSymbol{Value{2}},
 			PostfixSymbol{Value{3}},
-			PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
 			PostfixSymbol{Value{5}},
-			PostfixSymbol{PostfixSymbol::Type::ADDITION}
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
 		)
 	);
 }
@@ -155,9 +155,9 @@ TEST(InfixToPostfixTests, Addition_multiplication)
 {
 	const InfixSymbols input {
 		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Type::ADDITION},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Type::MULTIPLICATION},
+		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
 		InfixSymbol{Value{5}},
 	};
 	
@@ -169,8 +169,8 @@ TEST(InfixToPostfixTests, Addition_multiplication)
 			PostfixSymbol{Value{2}},
 			PostfixSymbol{Value{3}},
 			PostfixSymbol{Value{5}},
-			PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
-			PostfixSymbol{PostfixSymbol::Type::ADDITION}
+			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
 		)
 	);
 }
@@ -179,11 +179,11 @@ TEST(InfixToPostfixTests, Multiplication_addition_multiplication)
 {
 	const InfixSymbols input {
 		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Type::MULTIPLICATION},
+		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
 		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Type::ADDITION},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{4}},
-		InfixSymbol{InfixSymbol::Type::MULTIPLICATION},
+		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
 		InfixSymbol{Value{5}}
 	};
 	
@@ -194,11 +194,11 @@ TEST(InfixToPostfixTests, Multiplication_addition_multiplication)
 		ElementsAre(
 			PostfixSymbol{Value{2}},
 			PostfixSymbol{Value{3}},
-			PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
 			PostfixSymbol{Value{4}},
 			PostfixSymbol{Value{5}},
-			PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
-			PostfixSymbol{PostfixSymbol::Type::ADDITION}
+			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
 		)
 	);
 }
@@ -207,11 +207,11 @@ TEST(InfixToPostfixTests, Addition_multiplication_addition)
 {
 	const InfixSymbols input {
 		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Type::ADDITION},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Type::MULTIPLICATION},
+		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
 		InfixSymbol{Value{4}},
-		InfixSymbol{InfixSymbol::Type::ADDITION},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{5}}
 	};
 	
@@ -223,10 +223,10 @@ TEST(InfixToPostfixTests, Addition_multiplication_addition)
 			PostfixSymbol{Value{2}},
 			PostfixSymbol{Value{3}},
 			PostfixSymbol{Value{4}},
-			PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
-			PostfixSymbol{PostfixSymbol::Type::ADDITION},
+			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 			PostfixSymbol{Value{5}},
-			PostfixSymbol{PostfixSymbol::Type::ADDITION}
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
 		)
 	);
 }
@@ -235,9 +235,9 @@ TEST(InfixToPostfixTests, Addition_subtraction)
 {
 	const InfixSymbols input {
 		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Type::ADDITION},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Type::SUBTRACTION},
+		InfixSymbol{InfixSymbol::Operator::SUBTRACTION},
 		InfixSymbol{Value{4}},
 	};
 	
@@ -248,9 +248,9 @@ TEST(InfixToPostfixTests, Addition_subtraction)
 		ElementsAre(
 			PostfixSymbol{Value{2}},
 			PostfixSymbol{Value{3}},
-			PostfixSymbol{PostfixSymbol::Type::ADDITION},
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 			PostfixSymbol{Value{4}},
-			PostfixSymbol{PostfixSymbol::Type::SUBTRACTION}
+			PostfixSymbol{PostfixSymbol::Operator::SUBTRACTION}
 		)
 	);
 }
@@ -259,9 +259,9 @@ TEST(InfixToPostfixTests, Subtraction_addition)
 {
 	const InfixSymbols input {
 		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Type::SUBTRACTION},
+		InfixSymbol{InfixSymbol::Operator::SUBTRACTION},
 		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Type::ADDITION},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{4}},
 	};
 	
@@ -272,9 +272,9 @@ TEST(InfixToPostfixTests, Subtraction_addition)
 		ElementsAre(
 			PostfixSymbol{Value{2}},
 			PostfixSymbol{Value{3}},
-			PostfixSymbol{PostfixSymbol::Type::SUBTRACTION},
+			PostfixSymbol{PostfixSymbol::Operator::SUBTRACTION},
 			PostfixSymbol{Value{4}},
-			PostfixSymbol{PostfixSymbol::Type::ADDITION}
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
 		)
 	);
 }
@@ -283,11 +283,11 @@ TEST(InfixToPostfixTests, Addition_multiplication_subtraction)
 {
 	const InfixSymbols input {
 		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Type::ADDITION},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Type::MULTIPLICATION},
+		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
 		InfixSymbol{Value{4}},
-		InfixSymbol{InfixSymbol::Type::SUBTRACTION},
+		InfixSymbol{InfixSymbol::Operator::SUBTRACTION},
 		InfixSymbol{Value{5}},
 	};
 	
@@ -299,10 +299,10 @@ TEST(InfixToPostfixTests, Addition_multiplication_subtraction)
 			PostfixSymbol{Value{2}},
 			PostfixSymbol{Value{3}},
 			PostfixSymbol{Value{4}},
-			PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
-			PostfixSymbol{PostfixSymbol::Type::ADDITION},
+			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 			PostfixSymbol{Value{5}},
-			PostfixSymbol{PostfixSymbol::Type::SUBTRACTION}
+			PostfixSymbol{PostfixSymbol::Operator::SUBTRACTION}
 		)
 	);
 }

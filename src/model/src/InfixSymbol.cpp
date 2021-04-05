@@ -7,14 +7,14 @@ bool is_value(const InfixSymbol& symbol)
 	return std::holds_alternative<math::Value>(symbol.data);
 }
 
-bool is_operation_type(const InfixSymbol& symbol)
+bool is_operator(const InfixSymbol& symbol)
 {
-	return std::holds_alternative<InfixSymbol::Type>(symbol.data);
+	return std::holds_alternative<InfixSymbol::Operator>(symbol.data);
 }
 
-InfixSymbol::Type get_type(const InfixSymbol& symbol)
+InfixSymbol::Operator get_operator(const InfixSymbol& symbol)
 {
-	return std::get<InfixSymbol::Type>(symbol.data);
+	return std::get<InfixSymbol::Operator>(symbol.data);
 }
 
 math::Value get_value(const InfixSymbol& symbol)

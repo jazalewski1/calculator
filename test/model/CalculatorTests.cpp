@@ -52,7 +52,7 @@ TEST(CalculatorTests_Rpn, Addition)
 	{
 		PostfixSymbol{Value{42}},
 		PostfixSymbol{Value{69}},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 	};
 	Calculator sut{input};
 
@@ -68,11 +68,11 @@ TEST(CalculatorTests_Rpn, Addition_four_times_in_a_row)
 	{
 		PostfixSymbol{Value{42}},
 		PostfixSymbol{Value{69}},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 		PostfixSymbol{Value{17}},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 		PostfixSymbol{Value{128}},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION}
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION}
 	};
 	Calculator sut{input};
 
@@ -88,9 +88,9 @@ TEST(CalculatorTests_Rpn, Addition_subtraction)
 	{
 		PostfixSymbol{Value{42}},
 		PostfixSymbol{Value{69}},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 		PostfixSymbol{Value{11}},
-		PostfixSymbol{PostfixSymbol::Type::SUBTRACTION},
+		PostfixSymbol{PostfixSymbol::Operator::SUBTRACTION},
 	};
 
 	Calculator sut{input};
@@ -105,9 +105,9 @@ TEST(CalculatorTests_Rpn, Subtraction_addition)
 	{
 		PostfixSymbol{Value{69}},
 		PostfixSymbol{Value{42}},
-		PostfixSymbol{PostfixSymbol::Type::SUBTRACTION},
+		PostfixSymbol{PostfixSymbol::Operator::SUBTRACTION},
 		PostfixSymbol{Value{23}},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 	};
 
 	Calculator sut{input};
@@ -122,9 +122,9 @@ TEST(CalculatorTests_Rpn, Multiplication_addition)
 	{
 		PostfixSymbol{Value{2}},
 		PostfixSymbol{Value{3}},
-		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
 		PostfixSymbol{Value{5}},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 	};
 
 	Calculator sut{input};
@@ -140,8 +140,8 @@ TEST(CalculatorTests_Rpn, Addition_multiplication)
 		PostfixSymbol{Value{2}},
 		PostfixSymbol{Value{3}},
 		PostfixSymbol{Value{5}},
-		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 	};
 	Calculator sut{input};
 
@@ -155,11 +155,11 @@ TEST(CalculatorTests_Rpn, Multiplication_multiplication_addition)
 	{
 		PostfixSymbol{Value{2}},
 		PostfixSymbol{Value{3}},
-		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
 		PostfixSymbol{Value{4}},
-		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
 		PostfixSymbol{Value{5}},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 	};
 
 	Calculator sut{input};
@@ -174,11 +174,11 @@ TEST(CalculatorTests_Rpn, Multiplication_addition_multiplication)
 	{
 		PostfixSymbol{Value{2}},
 		PostfixSymbol{Value{3}},
-		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
 		PostfixSymbol{Value{4}},
 		PostfixSymbol{Value{5}},
-		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 	};
 
 	Calculator sut{input};
@@ -194,10 +194,10 @@ TEST(CalculatorTests_Rpn, Addition_multiplication_multiplication)
 		PostfixSymbol{Value{2}},
 		PostfixSymbol{Value{3}},
 		PostfixSymbol{Value{4}},
-		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
 		PostfixSymbol{Value{5}},
-		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 	};
 
 	Calculator sut{input};
@@ -212,11 +212,11 @@ TEST(CalculatorTests_Rpn, Addition_addition_multiplication)
 	{
 		PostfixSymbol{Value{2}},
 		PostfixSymbol{Value{3}},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 		PostfixSymbol{Value{4}},
 		PostfixSymbol{Value{5}},
-		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 	};
 
 	Calculator sut{input};
@@ -232,10 +232,10 @@ TEST(CalculatorTests_Rpn, Addition_multiplication_addition)
 		PostfixSymbol{Value{2}},
 		PostfixSymbol{Value{3}},
 		PostfixSymbol{Value{4}},
-		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 		PostfixSymbol{Value{5}},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 	};
 
 	Calculator sut{input};
@@ -250,11 +250,11 @@ TEST(CalculatorTests_Rpn, Multiplication_addition_addition)
 	{
 		PostfixSymbol{Value{2}},
 		PostfixSymbol{Value{3}},
-		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
 		PostfixSymbol{Value{4}},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 		PostfixSymbol{Value{5}},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
 	};
 
 	Calculator sut{input};
@@ -270,11 +270,11 @@ TEST(CalculatorTests_Rpn, Wrong_input_with_not_enough_values_for_last_operation)
 		PostfixSymbol{Value{2}},
 		PostfixSymbol{Value{3}},
 		PostfixSymbol{Value{4}},
-		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
 		PostfixSymbol{Value{5}},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
-		PostfixSymbol{PostfixSymbol::Type::ADDITION},
-		PostfixSymbol{PostfixSymbol::Type::MULTIPLICATION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::ADDITION},
+		PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
 	};
 
 	Calculator sut{input};

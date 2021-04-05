@@ -12,16 +12,16 @@ using Value = math::Value;
 
 namespace
 {
-Value execute_operation(PostfixSymbol::Type type, const Value& lhs, const Value& rhs)
+Value execute_operation(PostfixSymbol::Operator type, const Value& lhs, const Value& rhs)
 {
 	const auto lhs_value = math::is_integer(lhs) ? math::get_integer(lhs) : math::get_double(lhs);
 	const auto rhs_value = math::is_integer(rhs) ? math::get_integer(rhs) : math::get_double(rhs);
 	switch (type)
 	{
-		case PostfixSymbol::Type::SUBTRACTION: return math::subtraction(lhs_value, rhs_value);
-		case PostfixSymbol::Type::ADDITION: return math::addition(lhs_value, rhs_value);
-		case PostfixSymbol::Type::DIVISION: return math::division(lhs_value, rhs_value);
-		case PostfixSymbol::Type::MULTIPLICATION: return math::multiplication(lhs_value, rhs_value);
+		case PostfixSymbol::Operator::SUBTRACTION: return math::subtraction(lhs_value, rhs_value);
+		case PostfixSymbol::Operator::ADDITION: return math::addition(lhs_value, rhs_value);
+		case PostfixSymbol::Operator::DIVISION: return math::division(lhs_value, rhs_value);
+		case PostfixSymbol::Operator::MULTIPLICATION: return math::multiplication(lhs_value, rhs_value);
 	}
 }
 } // namespace
@@ -48,10 +48,10 @@ OperationResult Calculator::calculate_next()
 
 	if (not has_finished())
 	{
-		if (const auto& symbol = *current_iterator; is_operation_type(symbol))
+		if (const auto& symbol = *current_iterator; is_operator(symbol))
 		{
-			const auto operation_type = get_type(symbol);
-			process_operation(operation_type);
+			const auto operator_type = get_operator(symbol);
+			process_operation(operator_type);
 			std::advance(current_iterator, 1);
 		}
 	}
@@ -82,7 +82,7 @@ Value Calculator::read_current_value_symbol() const
 	return value;
 }
 
-void Calculator::process_operation(PostfixSymbol::Type operation_type)
+void Calculator::process_operation(PostfixSymbol::Operator operation_type)
 {
 	if (value_stack.size() < 2)
 	{

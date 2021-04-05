@@ -8,7 +8,7 @@ namespace model
 {
 struct PostfixSymbol
 {
-	enum class Type
+	enum class Operator
 	{
 		SUBTRACTION,
 		ADDITION,
@@ -16,7 +16,7 @@ struct PostfixSymbol
 		MULTIPLICATION
 	};
 
-	using Variant = std::variant<math::Value, Type>;
+	using Variant = std::variant<math::Value, Operator>;
 	const Variant data;
 };
 
@@ -24,9 +24,9 @@ using PostfixSymbols = std::vector<PostfixSymbol>;
 
 bool is_value(const PostfixSymbol&);
 
-bool is_operation_type(const PostfixSymbol&);
+bool is_operator(const PostfixSymbol&);
 
-PostfixSymbol::Type get_type(const PostfixSymbol&);
+PostfixSymbol::Operator get_operator(const PostfixSymbol&);
 
 math::Value get_value(const PostfixSymbol&);
 } // namespace model

@@ -8,14 +8,14 @@ bool is_value(const PostfixSymbol& symbol)
 	return std::holds_alternative<math::Value>(symbol.data);
 }
 
-bool is_operation_type(const PostfixSymbol& symbol)
+bool is_operator(const PostfixSymbol& symbol)
 {
-	return std::holds_alternative<PostfixSymbol::Type>(symbol.data);
+	return std::holds_alternative<PostfixSymbol::Operator>(symbol.data);
 }
 
-PostfixSymbol::Type get_type(const PostfixSymbol& symbol)
+PostfixSymbol::Operator get_operator(const PostfixSymbol& symbol)
 {
-	return std::get<PostfixSymbol::Type>(symbol.data);
+	return std::get<PostfixSymbol::Operator>(symbol.data);
 }
 
 math::Value get_value(const PostfixSymbol& symbol)

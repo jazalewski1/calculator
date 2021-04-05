@@ -30,6 +30,6 @@ private:
 
 	math::Value read_current_value_symbol() const;
 
-	void process_operation(PostfixSymbol::Type);
+	void process_operation(PostfixSymbol::Operator);
 };
 } // namespace model
