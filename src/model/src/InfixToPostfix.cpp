@@ -42,7 +42,7 @@ PostfixSymbols infix_to_postfix(const InfixSymbols& input)
 {
 	using Operator = InfixSymbol::Type; // FDEV: should be replaced with Operator type with precedence and associativity info
 	PostfixSymbols output;
-	std::stack<Operator> operators;
+	std::stack<Operator> operator_stack;
 
 	for (const auto& input_symbol : input)
 	{
@@ -54,12 +54,12 @@ PostfixSymbols infix_to_postfix(const InfixSymbols& input)
 		else if (is_operation_type(input_symbol))
 		{
 			const auto current_operator = get_type(input_symbol);
-			while (not operators.empty())
+			while (not operator_stack.empty())
 			{	
-				const auto top_operator = operators.top();
+				const auto top_operator = operator_stack.top();
 				if (should_top_be_moved(top_operator, current_operator))
 				{
-					operators.pop();
+					operator_stack.pop();
 					const auto converted_type = convert(top_operator);
 					output.emplace_back(PostfixSymbol{converted_type});
 				}
@@ -69,14 +69,14 @@ PostfixSymbols infix_to_postfix(const InfixSymbols& input)
 				}
 			}
 
-			operators.push(current_operator);
+			operator_stack.push(current_operator);
 		}
 	}
 
-	while (not operators.empty())
+	while (not operator_stack.empty())
 	{
-		const auto oper = operators.top();
-		operators.pop();
+		const auto oper = operator_stack.top();
+		operator_stack.pop();
 		const auto converted_type = convert(oper);
 		output.emplace_back(PostfixSymbol{converted_type});
 	}
