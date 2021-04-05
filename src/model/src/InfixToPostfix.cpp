@@ -1,7 +1,8 @@
 #include "math/Value.hpp"
 #include "model/InfixSymbol.hpp"
-#include "model/PostfixSymbol.hpp"
 #include "model/InfixToPostfix.hpp"
+#include "model/PostfixSymbol.hpp"
+#include "util/Exception.hpp"
 #include <stack>
 
 namespace model
@@ -23,8 +24,9 @@ bool should_top_be_moved(InfixSymbol::Operator top, InfixSymbol::Operator curren
 {
 	const auto top_has_greater_precedence = precedence(top) > precedence(current);
 	const auto top_has_equal_precedence = precedence(top) == precedence(current);
-	constexpr auto token_is_left_associative = true; // temporary until operators with different associativity are used
-	return (top_has_greater_precedence) or (top_has_equal_precedence and token_is_left_associative);
+	constexpr auto top_is_left_associative = true; // temporary until operators with different associativity are used
+	const auto top_is_not_open_par = top != InfixSymbol::Operator::OPEN_PAR;
+	return (top_is_not_open_par) and ((top_has_greater_precedence) or (top_has_equal_precedence and top_is_left_associative));
 }
 } // namespace
 

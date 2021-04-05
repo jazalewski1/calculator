@@ -43,4 +43,16 @@ private:
 	std::string get_name() const override { return "InputErrorException"; }
 	std::string get_message() const override { return message_str; }
 };
+
+class UnmatchedBracesException : public Exception
+{
+public:
+	UnmatchedBracesException(std::string message_string) : message_str{message_string} {}
+
+private:
+	const std::string message_str;
+
+	std::string get_name() const override { return "UnmatchedBracesException"; }
+	std::string get_message() const override { return message_str; }
+};
 } // namespace util

@@ -13,7 +13,9 @@ struct InfixSymbol
 		SUBTRACTION,
 		ADDITION,
 		DIVISION,
-		MULTIPLICATION
+		MULTIPLICATION,
+		OPEN_PAR,
+		CLOSE_PAR
 	};
 
 	using Variant = std::variant<math::Value, Operator>;

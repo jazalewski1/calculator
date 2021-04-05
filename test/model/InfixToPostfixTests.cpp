@@ -2,6 +2,7 @@
 #include "model/InfixSymbol.hpp"
 #include "model/PostfixSymbol.hpp"
 #include "model/InfixToPostfix.hpp"
+#include "util/Exception.hpp"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -317,4 +318,246 @@ TEST(InfixToPostfixTests, Addition_multiplication_subtraction)
 			PostfixSymbol{PostfixSymbol::Operator::SUBTRACTION}
 		)
 	);
+}
+
+TEST(InfixToPostfix_ParenthesesTests, Empty_parentheses)
+{
+	const InfixSymbols input {
+		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+	};
+	
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
+	EXPECT_TRUE(result.empty());
+}
+
+TEST(InfixToPostfix_ParenthesesTests, Value_in_parentheses)
+{
+	const InfixSymbols input {
+		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{Value{2}},
+		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+	};
+	
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
+
+	EXPECT_THAT(
+		result,
+		ElementsAre(PostfixSymbol{Value{2}})
+	);
+}
+
+TEST(InfixToPostfix_ParenthesesTests, Addition_in_parentheses)
+{
+	const InfixSymbols input {
+		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{Value{2}},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
+		InfixSymbol{Value{3}},
+		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+	};
+	
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
+
+	EXPECT_THAT(
+		result,
+		ElementsAre(
+			PostfixSymbol{Value{2}},
+			PostfixSymbol{Value{3}},
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
+		)
+	);
+}
+
+TEST(InfixToPostfix_ParenthesesTests, When_addition_in_par_next_multiplication_then_addition_executes_first)
+{
+	const InfixSymbols input {
+		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{Value{2}},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
+		InfixSymbol{Value{3}},
+		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
+		InfixSymbol{Value{5}},
+	};
+	
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
+
+	EXPECT_THAT(
+		result,
+		ElementsAre(
+			PostfixSymbol{Value{2}},
+			PostfixSymbol{Value{3}},
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION},
+			PostfixSymbol{Value{5}},
+			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION}
+		)
+	);
+}
+
+TEST(InfixToPostfix_ParenthesesTests, When_addition_next_multiplication_in_par_then_multiplication_executes_first)
+{
+	const InfixSymbols input {
+		InfixSymbol{Value{2}},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
+		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{Value{3}},
+		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
+		InfixSymbol{Value{5}},
+		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+	};
+	
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
+
+	EXPECT_THAT(
+		result,
+		ElementsAre(
+			PostfixSymbol{Value{2}},
+			PostfixSymbol{Value{3}},
+			PostfixSymbol{Value{5}},
+			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
+		)
+	);
+}
+
+TEST(InfixToPostfix_ParenthesesTests, When_multiplication_in_par_next_addition_then_multiplication_executes_first)
+{
+	const InfixSymbols input {
+		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{Value{2}},
+		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
+		InfixSymbol{Value{3}},
+		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
+		InfixSymbol{Value{5}},
+	};
+	
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
+
+	EXPECT_THAT(
+		result,
+		ElementsAre(
+			PostfixSymbol{Value{2}},
+			PostfixSymbol{Value{3}},
+			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
+			PostfixSymbol{Value{5}},
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
+		)
+	);
+}
+
+TEST(InfixToPostfix_ParenthesesTests, When_multiplication_next_addition_in_par_then_addition_executes_first)
+{
+	const InfixSymbols input {
+		InfixSymbol{Value{2}},
+		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
+		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{Value{3}},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
+		InfixSymbol{Value{5}},
+		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+	};
+	
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
+
+	EXPECT_THAT(
+		result,
+		ElementsAre(
+			PostfixSymbol{Value{2}},
+			PostfixSymbol{Value{3}},
+			PostfixSymbol{Value{5}},
+			PostfixSymbol{PostfixSymbol::Operator::ADDITION},
+			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION}
+		)
+	);
+}
+
+TEST(InfixToPostfix_ParenthesesTests, Throws_when_unmatched_left_par)
+{
+	const InfixSymbols input {
+		InfixSymbol{Value{2}},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
+		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{Value{3}},
+		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
+		InfixSymbol{Value{4}},
+	};
+	
+	InfixToPostfixConverter sut{};
+	EXPECT_THROW(sut.convert(input), util::UnmatchedBracesException);
+}
+
+TEST(InfixToPostfix_ParenthesesTests, Throws_when_one_par_pair_and_unmatched_left_par)
+{
+	const InfixSymbols input {
+		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{Value{2}},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
+		InfixSymbol{Value{3}},
+		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
+		InfixSymbol{Value{4}},
+	};
+	
+	InfixToPostfixConverter sut{};
+	EXPECT_THROW(sut.convert(input), util::UnmatchedBracesException);
+}
+
+TEST(InfixToPostfix_ParenthesesTests, Throws_when_unmatched_right_par)
+{
+	const InfixSymbols input {
+		InfixSymbol{Value{2}},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
+		InfixSymbol{Value{3}},
+		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
+		InfixSymbol{Value{4}},
+	};
+	
+	InfixToPostfixConverter sut{};
+	EXPECT_THROW(sut.convert(input), util::UnmatchedBracesException);
+}
+
+TEST(InfixToPostfix_ParenthesesTests, Throws_when_one_par_pair_and_unmatched_right_par)
+{
+	const InfixSymbols input {
+		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{Value{2}},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
+		InfixSymbol{Value{3}},
+		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
+		InfixSymbol{Value{4}},
+		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+	};
+	
+	InfixToPostfixConverter sut{};
+	EXPECT_THROW(sut.convert(input), util::UnmatchedBracesException);
+}
+
+TEST(InfixToPostfix_ParenthesesTests, Throws_when_parentheses_have_swapped_order)
+{
+	const InfixSymbols input {
+		InfixSymbol{Value{2}},
+		InfixSymbol{InfixSymbol::Operator::SUBTRACTION},
+		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{Value{3}},
+		InfixSymbol{InfixSymbol::Operator::ADDITION},
+		InfixSymbol{Value{4}},
+		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
+		InfixSymbol{Value{5}},
+	};
+	
+	InfixToPostfixConverter sut{};
+	EXPECT_THROW(sut.convert(input), util::UnmatchedBracesException);
 }
