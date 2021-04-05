@@ -52,7 +52,8 @@ TEST(InfixToPostfixTests, Empty_input)
 {
 	const InfixSymbols input {};
 	
-	const auto result = infix_to_postfix(input);
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
 
 	EXPECT_TRUE(result.empty());
 }
@@ -61,7 +62,8 @@ TEST(InfixToPostfixTests, Input_has_1_value_symbol)
 {
 	const InfixSymbols input {InfixSymbol{Value{5}}};
 	
-	const auto result = infix_to_postfix(input);
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
 
 	EXPECT_THAT(result, ElementsAre(PostfixSymbol{Value{5}}));
 }
@@ -74,7 +76,8 @@ TEST(InfixToPostfixTests, Input_has_3_value_symbols)
 		InfixSymbol{Value{128}},
 	};
 	
-	const auto result = infix_to_postfix(input);
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
 
 	EXPECT_THAT(result, ElementsAre(PostfixSymbol{Value{5}}, PostfixSymbol{Value{42}}, PostfixSymbol{Value{128}}));
 }
@@ -87,7 +90,8 @@ TEST(InfixToPostfixTests, Value_addition_value)
 		InfixSymbol{Value{69}},
 	};
 	
-	const auto result = infix_to_postfix(input);
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
 
 	EXPECT_THAT(
 		result, 
@@ -111,7 +115,8 @@ TEST(InfixToPostfixTests, Addition_four_times_in_a_row)
 		InfixSymbol{Value{128}},
 	};
 	
-	const auto result = infix_to_postfix(input);
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
 
 	EXPECT_THAT(
 		result,
@@ -137,7 +142,8 @@ TEST(InfixToPostfixTests, Multiplication_addition)
 		InfixSymbol{Value{5}},
 	};
 	
-	const auto result = infix_to_postfix(input);
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
 
 	EXPECT_THAT(
 		result,
@@ -161,7 +167,8 @@ TEST(InfixToPostfixTests, Addition_multiplication)
 		InfixSymbol{Value{5}},
 	};
 	
-	const auto result = infix_to_postfix(input);
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
 
 	EXPECT_THAT(
 		result,
@@ -187,7 +194,8 @@ TEST(InfixToPostfixTests, Multiplication_addition_multiplication)
 		InfixSymbol{Value{5}}
 	};
 	
-	const auto result = infix_to_postfix(input);
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
 
 	EXPECT_THAT(
 		result,
@@ -215,7 +223,8 @@ TEST(InfixToPostfixTests, Addition_multiplication_addition)
 		InfixSymbol{Value{5}}
 	};
 	
-	const auto result = infix_to_postfix(input);
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
 
 	EXPECT_THAT(
 		result,
@@ -241,7 +250,8 @@ TEST(InfixToPostfixTests, Addition_subtraction)
 		InfixSymbol{Value{4}},
 	};
 	
-	const auto result = infix_to_postfix(input);
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
 
 	EXPECT_THAT(
 		result,
@@ -265,7 +275,8 @@ TEST(InfixToPostfixTests, Subtraction_addition)
 		InfixSymbol{Value{4}},
 	};
 	
-	const auto result = infix_to_postfix(input);
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
 
 	EXPECT_THAT(
 		result,
@@ -291,7 +302,8 @@ TEST(InfixToPostfixTests, Addition_multiplication_subtraction)
 		InfixSymbol{Value{5}},
 	};
 	
-	const auto result = infix_to_postfix(input);
+	InfixToPostfixConverter sut{};
+	const auto result = sut.convert(input);
 
 	EXPECT_THAT(
 		result,
