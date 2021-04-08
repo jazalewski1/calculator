@@ -22,6 +22,8 @@ struct InfixSymbol
 
 using InfixSymbols = std::vector<InfixSymbol>;
 
+int precedence(InfixSymbol::Operator input);
+
 bool is_value(const InfixSymbol&);
 
 bool is_operator(const InfixSymbol&);

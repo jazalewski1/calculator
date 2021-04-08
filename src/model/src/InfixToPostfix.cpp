@@ -19,17 +19,6 @@ PostfixSymbol::Operator infix_to_postfix_operator(InfixSymbol::Operator input)
 	}
 }
 
-int precedence(InfixSymbol::Operator input)
-{
-	switch (input)
-	{
-		case InfixSymbol::Operator::SUBTRACTION: return 1;
-		case InfixSymbol::Operator::ADDITION: return 1;
-		case InfixSymbol::Operator::DIVISION: return 2;
-		case InfixSymbol::Operator::MULTIPLICATION: return 2;
-	}
-}
-
 bool should_top_be_moved(InfixSymbol::Operator top, InfixSymbol::Operator current)
 {
 	const auto top_has_greater_precedence = precedence(top) > precedence(current);

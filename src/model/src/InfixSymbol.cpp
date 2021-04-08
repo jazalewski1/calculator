@@ -2,6 +2,17 @@
 
 namespace model
 {
+int precedence(InfixSymbol::Operator input)
+{
+	switch (input)
+	{
+		case InfixSymbol::Operator::SUBTRACTION: return 1;
+		case InfixSymbol::Operator::ADDITION: return 1;
+		case InfixSymbol::Operator::DIVISION: return 2;
+		case InfixSymbol::Operator::MULTIPLICATION: return 2;
+	}
+}
+
 bool is_value(const InfixSymbol& symbol)
 {
 	return std::holds_alternative<math::Value>(symbol.data);
