@@ -13,12 +13,13 @@ struct InfixSymbol
 		SUBTRACTION,
 		ADDITION,
 		DIVISION,
-		MULTIPLICATION,
-		OPEN_PAR,
-		CLOSE_PAR
+		MULTIPLICATION
 	};
 
-	using Variant = std::variant<math::Value, Operator>;
+	struct OpenPar {};
+	struct ClosePar {};
+
+	using Variant = std::variant<math::Value, Operator, OpenPar, ClosePar>;
 	const Variant data;
 };
 
@@ -29,6 +30,10 @@ int precedence(InfixSymbol::Operator input);
 bool is_value(const InfixSymbol&);
 
 bool is_operator(const InfixSymbol&);
+
+bool is_open_par(const InfixSymbol&);
+
+bool is_close_par(const InfixSymbol&);
 
 InfixSymbol::Operator get_operator(const InfixSymbol&);
 

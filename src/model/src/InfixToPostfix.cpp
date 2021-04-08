@@ -17,16 +17,8 @@ PostfixSymbol::Operator infix_to_postfix_operator(InfixSymbol::Operator input)
 		case InfixSymbol::Operator::ADDITION: return PostfixSymbol::Operator::ADDITION;
 		case InfixSymbol::Operator::DIVISION: return PostfixSymbol::Operator::DIVISION;
 		case InfixSymbol::Operator::MULTIPLICATION: return PostfixSymbol::Operator::MULTIPLICATION;
+		default: throw util::BadAccessException{"Operator not found."};
 	}
-}
-
-bool should_top_be_moved(InfixSymbol::Operator top, InfixSymbol::Operator current)
-{
-	const auto top_has_greater_precedence = precedence(top) > precedence(current);
-	const auto top_has_equal_precedence = precedence(top) == precedence(current);
-	constexpr auto top_is_left_associative = true; // temporary until operators with different associativity are used
-	const auto top_is_not_open_par = top != InfixSymbol::Operator::OPEN_PAR;
-	return (top_is_not_open_par) and ((top_has_greater_precedence) or (top_has_equal_precedence and top_is_left_associative));
 }
 } // namespace
 
@@ -44,36 +36,85 @@ PostfixSymbols InfixToPostfixConverter::convert(const InfixSymbols& input)
 
 void InfixToPostfixConverter::process(Value value)
 {
-	output.emplace_back(PostfixSymbol{math::Value{value}});
+	output.emplace_back(PostfixSymbol{value});
 }
 
-void InfixToPostfixConverter::process(Operator oper)
+void InfixToPostfixConverter::process(InfixSymbol::Operator current_operator)
 {
-	while (not operator_stack.empty())
+	while (not temporary_stack.empty())
 	{	
-		const auto top_operator = operator_stack.top();
-		if (should_top_be_moved(top_operator, oper))
+		const auto top_symbol = temporary_stack.top();
+		if (is_open_par(top_symbol))
 		{
-			operator_stack.pop();
-			const auto converted_type = infix_to_postfix_operator(top_operator);
-			output.emplace_back(PostfixSymbol{converted_type});
+			break;
+		}
+
+		const auto top_operator = get_operator(top_symbol);
+
+		const auto top_has_greater_precedence = precedence(top_operator) > precedence(current_operator);
+		const auto top_has_equal_precedence = precedence(top_operator) == precedence(current_operator);
+		constexpr auto top_is_left_associative = true; // temporary until operators with different associativity are used
+		const auto should_top_be_moved = (top_has_greater_precedence) or (top_has_equal_precedence and top_is_left_associative);
+
+		if (should_top_be_moved)
+		{
+			temporary_stack.pop();
+			const auto postfix_operator = infix_to_postfix_operator(top_operator);
+			output.emplace_back(PostfixSymbol{postfix_operator});
 		}
 		else
 		{
 			break;
 		}
 	}
-	operator_stack.push(oper);
+	temporary_stack.push(InfixSymbol{current_operator});
+}
+
+void InfixToPostfixConverter::process(InfixSymbol::OpenPar open_par)
+{
+	temporary_stack.push(InfixSymbol{open_par});
+}
+
+void InfixToPostfixConverter::process(InfixSymbol::ClosePar close_par)
+{
+	while (not temporary_stack.empty())
+	{
+		const auto top_symbol = temporary_stack.top(); 
+		if (is_open_par(top_symbol))
+		{
+			break;
+		}
+
+		temporary_stack.pop();
+
+		const auto top_operator = get_operator(top_symbol);
+		const auto postfix_operator = infix_to_postfix_operator(top_operator);
+		output.emplace_back(PostfixSymbol{postfix_operator});
+	}
+
+	if (not temporary_stack.empty() and is_open_par(temporary_stack.top()))
+	{
+		temporary_stack.pop();
+	}
+	else
+	{
+		throw util::UnmatchedBracesException{"Unmatched right parenthesis."};
+	}
 }
 
 void InfixToPostfixConverter::finish_process()
 {
-	while (not operator_stack.empty())
+	while (not temporary_stack.empty())
 	{
-		const auto oper = operator_stack.top();
-		operator_stack.pop();
-		const auto infix_operator = infix_to_postfix_operator(oper);
-		output.emplace_back(PostfixSymbol{infix_operator});
+		const auto top_symbol = temporary_stack.top();
+		temporary_stack.pop();
+		if (is_open_par(top_symbol))
+		{
+			throw util::UnmatchedBracesException{"Unmatched left parenthesis."};
+		}
+		const auto infix_operator = get_operator(top_symbol);
+		const auto postfix_operator = infix_to_postfix_operator(infix_operator);
+		output.emplace_back(PostfixSymbol{postfix_operator});
 	}
 }
 } // namespace model

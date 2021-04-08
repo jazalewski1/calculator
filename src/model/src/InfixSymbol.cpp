@@ -23,6 +23,16 @@ bool is_operator(const InfixSymbol& symbol)
 	return std::holds_alternative<InfixSymbol::Operator>(symbol.data);
 }
 
+bool is_open_par(const InfixSymbol& symbol)
+{
+	return std::holds_alternative<InfixSymbol::OpenPar>(symbol.data);
+}
+
+bool is_close_par(const InfixSymbol& symbol)
+{
+	return std::holds_alternative<InfixSymbol::ClosePar>(symbol.data);
+}
+
 InfixSymbol::Operator get_operator(const InfixSymbol& symbol)
 {
 	return std::get<InfixSymbol::Operator>(symbol.data);

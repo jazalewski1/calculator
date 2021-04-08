@@ -323,8 +323,8 @@ TEST(InfixToPostfixTests, Addition_multiplication_subtraction)
 TEST(InfixToPostfix_ParenthesesTests, Empty_parentheses)
 {
 	const InfixSymbols input {
-		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
-		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::OpenPar{}},
+		InfixSymbol{InfixSymbol::ClosePar{}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -335,9 +335,9 @@ TEST(InfixToPostfix_ParenthesesTests, Empty_parentheses)
 TEST(InfixToPostfix_ParenthesesTests, Value_in_parentheses)
 {
 	const InfixSymbols input {
-		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{InfixSymbol::OpenPar{}},
 		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::ClosePar{}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -352,11 +352,11 @@ TEST(InfixToPostfix_ParenthesesTests, Value_in_parentheses)
 TEST(InfixToPostfix_ParenthesesTests, Addition_in_parentheses)
 {
 	const InfixSymbols input {
-		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{InfixSymbol::OpenPar{}},
 		InfixSymbol{Value{2}},
 		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::ClosePar{}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -375,11 +375,11 @@ TEST(InfixToPostfix_ParenthesesTests, Addition_in_parentheses)
 TEST(InfixToPostfix_ParenthesesTests, When_addition_in_par_next_multiplication_then_addition_executes_first)
 {
 	const InfixSymbols input {
-		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{InfixSymbol::OpenPar{}},
 		InfixSymbol{Value{2}},
 		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::ClosePar{}},
 		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
 		InfixSymbol{Value{5}},
 	};
@@ -404,11 +404,11 @@ TEST(InfixToPostfix_ParenthesesTests, When_addition_next_multiplication_in_par_t
 	const InfixSymbols input {
 		InfixSymbol{Value{2}},
 		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{InfixSymbol::OpenPar{}},
 		InfixSymbol{Value{3}},
 		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
 		InfixSymbol{Value{5}},
-		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::ClosePar{}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -429,11 +429,11 @@ TEST(InfixToPostfix_ParenthesesTests, When_addition_next_multiplication_in_par_t
 TEST(InfixToPostfix_ParenthesesTests, When_multiplication_in_par_next_addition_then_multiplication_executes_first)
 {
 	const InfixSymbols input {
-		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{InfixSymbol::OpenPar{}},
 		InfixSymbol{Value{2}},
 		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
 		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::ClosePar{}},
 		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{5}},
 	};
@@ -458,11 +458,11 @@ TEST(InfixToPostfix_ParenthesesTests, When_multiplication_next_addition_in_par_t
 	const InfixSymbols input {
 		InfixSymbol{Value{2}},
 		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
-		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{InfixSymbol::OpenPar{}},
 		InfixSymbol{Value{3}},
 		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{5}},
-		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::ClosePar{}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -485,7 +485,7 @@ TEST(InfixToPostfix_ParenthesesTests, Throws_when_unmatched_left_par)
 	const InfixSymbols input {
 		InfixSymbol{Value{2}},
 		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{InfixSymbol::OpenPar{}},
 		InfixSymbol{Value{3}},
 		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
 		InfixSymbol{Value{4}},
@@ -498,12 +498,12 @@ TEST(InfixToPostfix_ParenthesesTests, Throws_when_unmatched_left_par)
 TEST(InfixToPostfix_ParenthesesTests, Throws_when_one_par_pair_and_unmatched_left_par)
 {
 	const InfixSymbols input {
-		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
-		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{InfixSymbol::OpenPar{}},
+		InfixSymbol{InfixSymbol::OpenPar{}},
 		InfixSymbol{Value{2}},
 		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::ClosePar{}},
 		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
 		InfixSymbol{Value{4}},
 	};
@@ -518,7 +518,7 @@ TEST(InfixToPostfix_ParenthesesTests, Throws_when_unmatched_right_par)
 		InfixSymbol{Value{2}},
 		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::ClosePar{}},
 		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
 		InfixSymbol{Value{4}},
 	};
@@ -530,14 +530,14 @@ TEST(InfixToPostfix_ParenthesesTests, Throws_when_unmatched_right_par)
 TEST(InfixToPostfix_ParenthesesTests, Throws_when_one_par_pair_and_unmatched_right_par)
 {
 	const InfixSymbols input {
-		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{InfixSymbol::OpenPar{}},
 		InfixSymbol{Value{2}},
 		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::ClosePar{}},
 		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
 		InfixSymbol{Value{4}},
-		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::ClosePar{}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -549,11 +549,11 @@ TEST(InfixToPostfix_ParenthesesTests, Throws_when_parentheses_have_swapped_order
 	const InfixSymbols input {
 		InfixSymbol{Value{2}},
 		InfixSymbol{InfixSymbol::Operator::SUBTRACTION},
-		InfixSymbol{InfixSymbol::Operator::CLOSE_PAR},
+		InfixSymbol{InfixSymbol::ClosePar{}},
 		InfixSymbol{Value{3}},
 		InfixSymbol{InfixSymbol::Operator::ADDITION},
 		InfixSymbol{Value{4}},
-		InfixSymbol{InfixSymbol::Operator::OPEN_PAR},
+		InfixSymbol{InfixSymbol::OpenPar{}},
 		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
 		InfixSymbol{Value{5}},
 	};

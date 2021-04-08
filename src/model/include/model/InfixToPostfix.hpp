@@ -13,16 +13,19 @@ public:
 	PostfixSymbols convert(const InfixSymbols& input);
 
 private:
-	using Operator = InfixSymbol::Operator;
 	using Value = math::Value;
 
 	void process(Value);
 
-	void process(Operator);
+	void process(InfixSymbol::Operator);
+
+	void process(InfixSymbol::OpenPar);
+
+	void process(InfixSymbol::ClosePar);
 
 	void finish_process();
 
-	std::stack<Operator> operator_stack{};
+	std::stack<InfixSymbol> temporary_stack{};
 	PostfixSymbols output{};
 };
 } // namespace model
