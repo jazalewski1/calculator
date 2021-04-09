@@ -1,14 +1,14 @@
 set(
 	HEADERS
 	include/model/Calculator.hpp
-	include/model/PostfixSymbol.hpp
+	include/model/PostfixToken.hpp
 )
 
 set(
 	SOURCES
 	src/Calculator.cpp
-	src/InfixSymbol.cpp
-	src/PostfixSymbol.cpp
+	src/InfixToken.cpp
+	src/PostfixToken.cpp
 	src/InfixToPostfix.cpp
 )
 

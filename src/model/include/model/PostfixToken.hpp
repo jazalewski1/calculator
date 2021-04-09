@@ -6,7 +6,7 @@
 
 namespace model
 {
-struct PostfixSymbol
+struct PostfixToken
 {
 	enum class Operator
 	{
@@ -20,13 +20,13 @@ struct PostfixSymbol
 	const Variant data;
 };
 
-using PostfixSymbols = std::vector<PostfixSymbol>;
+using PostfixTokens = std::vector<PostfixToken>;
 
-bool is_value(const PostfixSymbol&);
+bool is_value(const PostfixToken&);
 
-bool is_operator(const PostfixSymbol&);
+bool is_operator(const PostfixToken&);
 
-PostfixSymbol::Operator get_operator(const PostfixSymbol&);
+PostfixToken::Operator get_operator(const PostfixToken&);
 
-math::Value get_value(const PostfixSymbol&);
+math::Value get_value(const PostfixToken&);
 } // namespace model

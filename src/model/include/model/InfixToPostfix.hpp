@@ -1,8 +1,8 @@
 #pragma once
 
 #include "math/Value.hpp"
-#include "model/InfixSymbol.hpp"
-#include "model/PostfixSymbol.hpp"
+#include "model/InfixToken.hpp"
+#include "model/PostfixToken.hpp"
 #include <stack>
 
 namespace model
@@ -10,22 +10,22 @@ namespace model
 class InfixToPostfixConverter
 {
 public:
-	PostfixSymbols convert(const InfixSymbols& input);
+	PostfixTokens convert(const InfixTokens& input);
 
 private:
 	using Value = math::Value;
 
 	void process(Value);
 
-	void process(InfixSymbol::Operator);
+	void process(InfixToken::Operator);
 
-	void process(InfixSymbol::OpenPar);
+	void process(InfixToken::OpenPar);
 
-	void process(InfixSymbol::ClosePar);
+	void process(InfixToken::ClosePar);
 
 	void finish_process();
 
-	std::stack<InfixSymbol> temporary_stack{};
-	PostfixSymbols output{};
+	std::stack<InfixToken> temporary_stack{};
+	PostfixTokens output{};
 };
 } // namespace model

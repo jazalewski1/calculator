@@ -1,7 +1,7 @@
 #pragma once
 
 #include "math/Value.hpp"
-#include "model/PostfixSymbol.hpp"
+#include "model/PostfixToken.hpp"
 #include <vector>
 #include <stack>
 
@@ -10,7 +10,7 @@ namespace model
 class Calculator
 {
 public:
-	Calculator(PostfixSymbols symbols);
+	Calculator(PostfixTokens tokens);
 
 	using OperationResult = math::Value;
 	OperationResult calculate_next();
@@ -20,16 +20,16 @@ public:
 private:
 	using ValueStack = std::stack<math::Value>;
 
-	PostfixSymbols symbols;
-	PostfixSymbols::const_iterator current_iterator;
+	PostfixTokens tokens;
+	PostfixTokens::const_iterator current_iterator;
 	ValueStack value_stack;
 
 	math::Value read_value_from_stack() const;
 
 	math::Value extract_value_from_stack();
 
-	math::Value read_current_value_symbol() const;
+	math::Value read_current_value_token() const;
 
-	void process_operation(PostfixSymbol::Operator);
+	void process_operation(PostfixToken::Operator);
 };
 } // namespace model

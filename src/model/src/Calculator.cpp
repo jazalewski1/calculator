@@ -1,7 +1,7 @@
 #include "math/Operation.hpp"
 #include "math/Value.hpp"
 #include "model/Calculator.hpp"
-#include "model/PostfixSymbol.hpp"
+#include "model/PostfixToken.hpp"
 #include "util/Exception.hpp"
 #include <variant>
 #include <vector>
@@ -12,22 +12,22 @@ using Value = math::Value;
 
 namespace
 {
-Value execute_operation(PostfixSymbol::Operator type, const Value& lhs, const Value& rhs)
+Value execute_operation(PostfixToken::Operator type, const Value& lhs, const Value& rhs)
 {
 	const auto lhs_value = math::is_integer(lhs) ? math::get_integer(lhs) : math::get_double(lhs);
 	const auto rhs_value = math::is_integer(rhs) ? math::get_integer(rhs) : math::get_double(rhs);
 	switch (type)
 	{
-		case PostfixSymbol::Operator::SUBTRACTION: return math::subtraction(lhs_value, rhs_value);
-		case PostfixSymbol::Operator::ADDITION: return math::addition(lhs_value, rhs_value);
-		case PostfixSymbol::Operator::DIVISION: return math::division(lhs_value, rhs_value);
-		case PostfixSymbol::Operator::MULTIPLICATION: return math::multiplication(lhs_value, rhs_value);
+		case PostfixToken::Operator::SUBTRACTION: return math::subtraction(lhs_value, rhs_value);
+		case PostfixToken::Operator::ADDITION: return math::addition(lhs_value, rhs_value);
+		case PostfixToken::Operator::DIVISION: return math::division(lhs_value, rhs_value);
+		case PostfixToken::Operator::MULTIPLICATION: return math::multiplication(lhs_value, rhs_value);
 	}
 }
 } // namespace
 
-Calculator::Calculator(std::vector<PostfixSymbol> input) : 
-	symbols{input}, current_iterator{symbols.begin()}
+Calculator::Calculator(std::vector<PostfixToken> input) : 
+	tokens{input}, current_iterator{tokens.begin()}
 {
 }
 
@@ -36,21 +36,21 @@ OperationResult Calculator::calculate_next()
 {
 	if (has_finished())
 	{
-		throw util::BadAccessException{"Calculator has no more symbols!"};
+		throw util::BadAccessException{"Calculator has no more tokens!"};
 	}
 
 	while (not has_finished() and is_value(*current_iterator))
 	{
-		const auto value = read_current_value_symbol();
+		const auto value = read_current_value_token();
 		value_stack.push(value);
 		std::advance(current_iterator, 1);
 	}
 
 	if (not has_finished())
 	{
-		if (const auto& symbol = *current_iterator; is_operator(symbol))
+		if (const auto& token = *current_iterator; is_operator(token))
 		{
-			const auto operator_type = get_operator(symbol);
+			const auto operator_type = get_operator(token);
 			process_operation(operator_type);
 			std::advance(current_iterator, 1);
 		}
@@ -61,7 +61,7 @@ OperationResult Calculator::calculate_next()
 
 bool Calculator::has_finished() const
 {
-	return current_iterator == symbols.end();
+	return current_iterator == tokens.end();
 }
 
 Value Calculator::read_value_from_stack() const
@@ -76,13 +76,13 @@ Value Calculator::extract_value_from_stack()
 	return output;
 }
 
-Value Calculator::read_current_value_symbol() const
+Value Calculator::read_current_value_token() const
 {
 	const auto value = get_value(*current_iterator);
 	return value;
 }
 
-void Calculator::process_operation(PostfixSymbol::Operator operation_type)
+void Calculator::process_operation(PostfixToken::Operator operation_type)
 {
 	if (value_stack.size() < 2)
 	{

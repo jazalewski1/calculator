@@ -1,6 +1,6 @@
 #include "math/Value.hpp"
-#include "model/InfixSymbol.hpp"
-#include "model/PostfixSymbol.hpp"
+#include "model/InfixToken.hpp"
+#include "model/PostfixToken.hpp"
 #include "model/InfixToPostfix.hpp"
 #include "util/Exception.hpp"
 #include <gtest/gtest.h>
@@ -8,7 +8,7 @@
 
 namespace model
 {
-inline bool operator==(const PostfixSymbol& lhs, const PostfixSymbol& rhs)
+inline bool operator==(const PostfixToken& lhs, const PostfixToken& rhs)
 {
 	if (is_value(lhs) and is_value(rhs))
 	{
@@ -21,26 +21,26 @@ inline bool operator==(const PostfixSymbol& lhs, const PostfixSymbol& rhs)
 	return false;
 }
 
-std::ostream& operator<<(std::ostream& stream, const PostfixSymbol::Operator& symbol)
+std::ostream& operator<<(std::ostream& stream, const PostfixToken::Operator& token)
 {
-	switch (symbol)
+	switch (token)
 	{
-		case PostfixSymbol::Operator::SUBTRACTION: return stream << "subtraction";
-		case PostfixSymbol::Operator::ADDITION: return stream << "addition";
-		case PostfixSymbol::Operator::DIVISION: return stream << "division";
-		case PostfixSymbol::Operator::MULTIPLICATION: return stream << "multiplication";
+		case PostfixToken::Operator::SUBTRACTION: return stream << "subtraction";
+		case PostfixToken::Operator::ADDITION: return stream << "addition";
+		case PostfixToken::Operator::DIVISION: return stream << "division";
+		case PostfixToken::Operator::MULTIPLICATION: return stream << "multiplication";
 	}
 	return stream << "unknown";
 }
 
-std::ostream& operator<<(std::ostream& stream, const PostfixSymbol& symbol)
+std::ostream& operator<<(std::ostream& stream, const PostfixToken& token)
 {
-	if (is_value(symbol))
+	if (is_value(token))
 	{
-		const auto value = get_value(symbol);
-		return stream << "PostfixSymbol:" << (math::is_integer(value) ? math::get_integer(value) : math::get_double(value));
+		const auto value = get_value(token);
+		return stream << "PostfixToken:" << (math::is_integer(value) ? math::get_integer(value) : math::get_double(value));
 	}
-	return stream << "PostfixSymbol:" << get_operator(symbol);
+	return stream << "PostfixToken:" << get_operator(token);
 }
 } // namespace model
 
@@ -51,7 +51,7 @@ using Value = math::Value;
 
 TEST(InfixToPostfixTests, Empty_input)
 {
-	const InfixSymbols input {};
+	const InfixTokens input {};
 	
 	InfixToPostfixConverter sut{};
 	const auto result = sut.convert(input);
@@ -59,36 +59,36 @@ TEST(InfixToPostfixTests, Empty_input)
 	EXPECT_TRUE(result.empty());
 }
 
-TEST(InfixToPostfixTests, Input_has_1_value_symbol)
+TEST(InfixToPostfixTests, Input_has_1_value_token)
 {
-	const InfixSymbols input {InfixSymbol{Value{5}}};
+	const InfixTokens input {InfixToken{Value{5}}};
 	
 	InfixToPostfixConverter sut{};
 	const auto result = sut.convert(input);
 
-	EXPECT_THAT(result, ElementsAre(PostfixSymbol{Value{5}}));
+	EXPECT_THAT(result, ElementsAre(PostfixToken{Value{5}}));
 }
 
-TEST(InfixToPostfixTests, Input_has_3_value_symbols)
+TEST(InfixToPostfixTests, Input_has_3_value_tokens)
 {
-	const InfixSymbols input {
-		InfixSymbol{Value{5}},
-		InfixSymbol{Value{42}},
-		InfixSymbol{Value{128}},
+	const InfixTokens input {
+		InfixToken{Value{5}},
+		InfixToken{Value{42}},
+		InfixToken{Value{128}},
 	};
 	
 	InfixToPostfixConverter sut{};
 	const auto result = sut.convert(input);
 
-	EXPECT_THAT(result, ElementsAre(PostfixSymbol{Value{5}}, PostfixSymbol{Value{42}}, PostfixSymbol{Value{128}}));
+	EXPECT_THAT(result, ElementsAre(PostfixToken{Value{5}}, PostfixToken{Value{42}}, PostfixToken{Value{128}}));
 }
 
 TEST(InfixToPostfixTests, Value_addition_value)
 {
-	const InfixSymbols input {
-		InfixSymbol{Value{42}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{69}},
+	const InfixTokens input {
+		InfixToken{Value{42}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{69}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -97,23 +97,23 @@ TEST(InfixToPostfixTests, Value_addition_value)
 	EXPECT_THAT(
 		result, 
 		ElementsAre(
-			PostfixSymbol{Value{42}},
-			PostfixSymbol{Value{69}},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
+			PostfixToken{Value{42}},
+			PostfixToken{Value{69}},
+			PostfixToken{PostfixToken::Operator::ADDITION}
 		)
 	);
 }
 
 TEST(InfixToPostfixTests, Addition_four_times_in_a_row)
 {
-	const InfixSymbols input {
-		InfixSymbol{Value{42}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{69}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{17}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{128}},
+	const InfixTokens input {
+		InfixToken{Value{42}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{69}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{17}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{128}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -122,25 +122,25 @@ TEST(InfixToPostfixTests, Addition_four_times_in_a_row)
 	EXPECT_THAT(
 		result,
 		ElementsAre(
-			PostfixSymbol{Value{42}},
-			PostfixSymbol{Value{69}},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION},
-			PostfixSymbol{Value{17}},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION},
-			PostfixSymbol{Value{128}},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
+			PostfixToken{Value{42}},
+			PostfixToken{Value{69}},
+			PostfixToken{PostfixToken::Operator::ADDITION},
+			PostfixToken{Value{17}},
+			PostfixToken{PostfixToken::Operator::ADDITION},
+			PostfixToken{Value{128}},
+			PostfixToken{PostfixToken::Operator::ADDITION}
 		)
 	);
 }
 
 TEST(InfixToPostfixTests, Multiplication_addition)
 {
-	const InfixSymbols input {
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{5}},
+	const InfixTokens input {
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::MULTIPLICATION},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{5}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -149,23 +149,23 @@ TEST(InfixToPostfixTests, Multiplication_addition)
 	EXPECT_THAT(
 		result,
 		ElementsAre(
-			PostfixSymbol{Value{2}},
-			PostfixSymbol{Value{3}},
-			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
-			PostfixSymbol{Value{5}},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
+			PostfixToken{Value{2}},
+			PostfixToken{Value{3}},
+			PostfixToken{PostfixToken::Operator::MULTIPLICATION},
+			PostfixToken{Value{5}},
+			PostfixToken{PostfixToken::Operator::ADDITION}
 		)
 	);
 }
 
 TEST(InfixToPostfixTests, Addition_multiplication)
 {
-	const InfixSymbols input {
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
-		InfixSymbol{Value{5}},
+	const InfixTokens input {
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::Operator::MULTIPLICATION},
+		InfixToken{Value{5}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -174,25 +174,25 @@ TEST(InfixToPostfixTests, Addition_multiplication)
 	EXPECT_THAT(
 		result,
 		ElementsAre(
-			PostfixSymbol{Value{2}},
-			PostfixSymbol{Value{3}},
-			PostfixSymbol{Value{5}},
-			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
+			PostfixToken{Value{2}},
+			PostfixToken{Value{3}},
+			PostfixToken{Value{5}},
+			PostfixToken{PostfixToken::Operator::MULTIPLICATION},
+			PostfixToken{PostfixToken::Operator::ADDITION}
 		)
 	);
 }
 
 TEST(InfixToPostfixTests, Multiplication_addition_multiplication)
 {
-	const InfixSymbols input {
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{4}},
-		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
-		InfixSymbol{Value{5}}
+	const InfixTokens input {
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::MULTIPLICATION},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{4}},
+		InfixToken{InfixToken::Operator::MULTIPLICATION},
+		InfixToken{Value{5}}
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -201,27 +201,27 @@ TEST(InfixToPostfixTests, Multiplication_addition_multiplication)
 	EXPECT_THAT(
 		result,
 		ElementsAre(
-			PostfixSymbol{Value{2}},
-			PostfixSymbol{Value{3}},
-			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
-			PostfixSymbol{Value{4}},
-			PostfixSymbol{Value{5}},
-			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
+			PostfixToken{Value{2}},
+			PostfixToken{Value{3}},
+			PostfixToken{PostfixToken::Operator::MULTIPLICATION},
+			PostfixToken{Value{4}},
+			PostfixToken{Value{5}},
+			PostfixToken{PostfixToken::Operator::MULTIPLICATION},
+			PostfixToken{PostfixToken::Operator::ADDITION}
 		)
 	);
 }
 
 TEST(InfixToPostfixTests, Addition_multiplication_addition)
 {
-	const InfixSymbols input {
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
-		InfixSymbol{Value{4}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{5}}
+	const InfixTokens input {
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::Operator::MULTIPLICATION},
+		InfixToken{Value{4}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{5}}
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -230,25 +230,25 @@ TEST(InfixToPostfixTests, Addition_multiplication_addition)
 	EXPECT_THAT(
 		result,
 		ElementsAre(
-			PostfixSymbol{Value{2}},
-			PostfixSymbol{Value{3}},
-			PostfixSymbol{Value{4}},
-			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION},
-			PostfixSymbol{Value{5}},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
+			PostfixToken{Value{2}},
+			PostfixToken{Value{3}},
+			PostfixToken{Value{4}},
+			PostfixToken{PostfixToken::Operator::MULTIPLICATION},
+			PostfixToken{PostfixToken::Operator::ADDITION},
+			PostfixToken{Value{5}},
+			PostfixToken{PostfixToken::Operator::ADDITION}
 		)
 	);
 }
 
 TEST(InfixToPostfixTests, Addition_subtraction)
 {
-	const InfixSymbols input {
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::SUBTRACTION},
-		InfixSymbol{Value{4}},
+	const InfixTokens input {
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::Operator::SUBTRACTION},
+		InfixToken{Value{4}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -257,23 +257,23 @@ TEST(InfixToPostfixTests, Addition_subtraction)
 	EXPECT_THAT(
 		result,
 		ElementsAre(
-			PostfixSymbol{Value{2}},
-			PostfixSymbol{Value{3}},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION},
-			PostfixSymbol{Value{4}},
-			PostfixSymbol{PostfixSymbol::Operator::SUBTRACTION}
+			PostfixToken{Value{2}},
+			PostfixToken{Value{3}},
+			PostfixToken{PostfixToken::Operator::ADDITION},
+			PostfixToken{Value{4}},
+			PostfixToken{PostfixToken::Operator::SUBTRACTION}
 		)
 	);
 }
 
 TEST(InfixToPostfixTests, Subtraction_addition)
 {
-	const InfixSymbols input {
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::SUBTRACTION},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{4}},
+	const InfixTokens input {
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::SUBTRACTION},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{4}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -282,25 +282,25 @@ TEST(InfixToPostfixTests, Subtraction_addition)
 	EXPECT_THAT(
 		result,
 		ElementsAre(
-			PostfixSymbol{Value{2}},
-			PostfixSymbol{Value{3}},
-			PostfixSymbol{PostfixSymbol::Operator::SUBTRACTION},
-			PostfixSymbol{Value{4}},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
+			PostfixToken{Value{2}},
+			PostfixToken{Value{3}},
+			PostfixToken{PostfixToken::Operator::SUBTRACTION},
+			PostfixToken{Value{4}},
+			PostfixToken{PostfixToken::Operator::ADDITION}
 		)
 	);
 }
 
 TEST(InfixToPostfixTests, Addition_multiplication_subtraction)
 {
-	const InfixSymbols input {
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
-		InfixSymbol{Value{4}},
-		InfixSymbol{InfixSymbol::Operator::SUBTRACTION},
-		InfixSymbol{Value{5}},
+	const InfixTokens input {
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::Operator::MULTIPLICATION},
+		InfixToken{Value{4}},
+		InfixToken{InfixToken::Operator::SUBTRACTION},
+		InfixToken{Value{5}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -309,22 +309,22 @@ TEST(InfixToPostfixTests, Addition_multiplication_subtraction)
 	EXPECT_THAT(
 		result,
 		ElementsAre(
-			PostfixSymbol{Value{2}},
-			PostfixSymbol{Value{3}},
-			PostfixSymbol{Value{4}},
-			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION},
-			PostfixSymbol{Value{5}},
-			PostfixSymbol{PostfixSymbol::Operator::SUBTRACTION}
+			PostfixToken{Value{2}},
+			PostfixToken{Value{3}},
+			PostfixToken{Value{4}},
+			PostfixToken{PostfixToken::Operator::MULTIPLICATION},
+			PostfixToken{PostfixToken::Operator::ADDITION},
+			PostfixToken{Value{5}},
+			PostfixToken{PostfixToken::Operator::SUBTRACTION}
 		)
 	);
 }
 
 TEST(InfixToPostfix_ParenthesesTests, Empty_parentheses)
 {
-	const InfixSymbols input {
-		InfixSymbol{InfixSymbol::OpenPar{}},
-		InfixSymbol{InfixSymbol::ClosePar{}},
+	const InfixTokens input {
+		InfixToken{InfixToken::OpenPar{}},
+		InfixToken{InfixToken::ClosePar{}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -334,10 +334,10 @@ TEST(InfixToPostfix_ParenthesesTests, Empty_parentheses)
 
 TEST(InfixToPostfix_ParenthesesTests, Value_in_parentheses)
 {
-	const InfixSymbols input {
-		InfixSymbol{InfixSymbol::OpenPar{}},
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::ClosePar{}},
+	const InfixTokens input {
+		InfixToken{InfixToken::OpenPar{}},
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::ClosePar{}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -345,18 +345,18 @@ TEST(InfixToPostfix_ParenthesesTests, Value_in_parentheses)
 
 	EXPECT_THAT(
 		result,
-		ElementsAre(PostfixSymbol{Value{2}})
+		ElementsAre(PostfixToken{Value{2}})
 	);
 }
 
 TEST(InfixToPostfix_ParenthesesTests, Addition_in_parentheses)
 {
-	const InfixSymbols input {
-		InfixSymbol{InfixSymbol::OpenPar{}},
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::ClosePar{}},
+	const InfixTokens input {
+		InfixToken{InfixToken::OpenPar{}},
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::ClosePar{}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -365,23 +365,23 @@ TEST(InfixToPostfix_ParenthesesTests, Addition_in_parentheses)
 	EXPECT_THAT(
 		result,
 		ElementsAre(
-			PostfixSymbol{Value{2}},
-			PostfixSymbol{Value{3}},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
+			PostfixToken{Value{2}},
+			PostfixToken{Value{3}},
+			PostfixToken{PostfixToken::Operator::ADDITION}
 		)
 	);
 }
 
 TEST(InfixToPostfix_ParenthesesTests, When_addition_in_par_next_multiplication_then_addition_executes_first)
 {
-	const InfixSymbols input {
-		InfixSymbol{InfixSymbol::OpenPar{}},
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::ClosePar{}},
-		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
-		InfixSymbol{Value{5}},
+	const InfixTokens input {
+		InfixToken{InfixToken::OpenPar{}},
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::ClosePar{}},
+		InfixToken{InfixToken::Operator::MULTIPLICATION},
+		InfixToken{Value{5}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -390,25 +390,25 @@ TEST(InfixToPostfix_ParenthesesTests, When_addition_in_par_next_multiplication_t
 	EXPECT_THAT(
 		result,
 		ElementsAre(
-			PostfixSymbol{Value{2}},
-			PostfixSymbol{Value{3}},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION},
-			PostfixSymbol{Value{5}},
-			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION}
+			PostfixToken{Value{2}},
+			PostfixToken{Value{3}},
+			PostfixToken{PostfixToken::Operator::ADDITION},
+			PostfixToken{Value{5}},
+			PostfixToken{PostfixToken::Operator::MULTIPLICATION}
 		)
 	);
 }
 
 TEST(InfixToPostfix_ParenthesesTests, When_addition_next_multiplication_in_par_then_multiplication_executes_first)
 {
-	const InfixSymbols input {
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{InfixSymbol::OpenPar{}},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
-		InfixSymbol{Value{5}},
-		InfixSymbol{InfixSymbol::ClosePar{}},
+	const InfixTokens input {
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{InfixToken::OpenPar{}},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::Operator::MULTIPLICATION},
+		InfixToken{Value{5}},
+		InfixToken{InfixToken::ClosePar{}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -417,25 +417,25 @@ TEST(InfixToPostfix_ParenthesesTests, When_addition_next_multiplication_in_par_t
 	EXPECT_THAT(
 		result,
 		ElementsAre(
-			PostfixSymbol{Value{2}},
-			PostfixSymbol{Value{3}},
-			PostfixSymbol{Value{5}},
-			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
+			PostfixToken{Value{2}},
+			PostfixToken{Value{3}},
+			PostfixToken{Value{5}},
+			PostfixToken{PostfixToken::Operator::MULTIPLICATION},
+			PostfixToken{PostfixToken::Operator::ADDITION}
 		)
 	);
 }
 
 TEST(InfixToPostfix_ParenthesesTests, When_multiplication_in_par_next_addition_then_multiplication_executes_first)
 {
-	const InfixSymbols input {
-		InfixSymbol{InfixSymbol::OpenPar{}},
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::ClosePar{}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{5}},
+	const InfixTokens input {
+		InfixToken{InfixToken::OpenPar{}},
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::MULTIPLICATION},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::ClosePar{}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{5}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -444,25 +444,25 @@ TEST(InfixToPostfix_ParenthesesTests, When_multiplication_in_par_next_addition_t
 	EXPECT_THAT(
 		result,
 		ElementsAre(
-			PostfixSymbol{Value{2}},
-			PostfixSymbol{Value{3}},
-			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION},
-			PostfixSymbol{Value{5}},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION}
+			PostfixToken{Value{2}},
+			PostfixToken{Value{3}},
+			PostfixToken{PostfixToken::Operator::MULTIPLICATION},
+			PostfixToken{Value{5}},
+			PostfixToken{PostfixToken::Operator::ADDITION}
 		)
 	);
 }
 
 TEST(InfixToPostfix_ParenthesesTests, When_multiplication_next_addition_in_par_then_addition_executes_first)
 {
-	const InfixSymbols input {
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
-		InfixSymbol{InfixSymbol::OpenPar{}},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{5}},
-		InfixSymbol{InfixSymbol::ClosePar{}},
+	const InfixTokens input {
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::MULTIPLICATION},
+		InfixToken{InfixToken::OpenPar{}},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{5}},
+		InfixToken{InfixToken::ClosePar{}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -471,24 +471,24 @@ TEST(InfixToPostfix_ParenthesesTests, When_multiplication_next_addition_in_par_t
 	EXPECT_THAT(
 		result,
 		ElementsAre(
-			PostfixSymbol{Value{2}},
-			PostfixSymbol{Value{3}},
-			PostfixSymbol{Value{5}},
-			PostfixSymbol{PostfixSymbol::Operator::ADDITION},
-			PostfixSymbol{PostfixSymbol::Operator::MULTIPLICATION}
+			PostfixToken{Value{2}},
+			PostfixToken{Value{3}},
+			PostfixToken{Value{5}},
+			PostfixToken{PostfixToken::Operator::ADDITION},
+			PostfixToken{PostfixToken::Operator::MULTIPLICATION}
 		)
 	);
 }
 
 TEST(InfixToPostfix_ParenthesesTests, Throws_when_unmatched_left_par)
 {
-	const InfixSymbols input {
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{InfixSymbol::OpenPar{}},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
-		InfixSymbol{Value{4}},
+	const InfixTokens input {
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{InfixToken::OpenPar{}},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::Operator::MULTIPLICATION},
+		InfixToken{Value{4}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -497,15 +497,15 @@ TEST(InfixToPostfix_ParenthesesTests, Throws_when_unmatched_left_par)
 
 TEST(InfixToPostfix_ParenthesesTests, Throws_when_one_par_pair_and_unmatched_left_par)
 {
-	const InfixSymbols input {
-		InfixSymbol{InfixSymbol::OpenPar{}},
-		InfixSymbol{InfixSymbol::OpenPar{}},
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::ClosePar{}},
-		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
-		InfixSymbol{Value{4}},
+	const InfixTokens input {
+		InfixToken{InfixToken::OpenPar{}},
+		InfixToken{InfixToken::OpenPar{}},
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::ClosePar{}},
+		InfixToken{InfixToken::Operator::MULTIPLICATION},
+		InfixToken{Value{4}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -514,13 +514,13 @@ TEST(InfixToPostfix_ParenthesesTests, Throws_when_one_par_pair_and_unmatched_lef
 
 TEST(InfixToPostfix_ParenthesesTests, Throws_when_unmatched_right_par)
 {
-	const InfixSymbols input {
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::ClosePar{}},
-		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
-		InfixSymbol{Value{4}},
+	const InfixTokens input {
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::ClosePar{}},
+		InfixToken{InfixToken::Operator::MULTIPLICATION},
+		InfixToken{Value{4}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -529,15 +529,15 @@ TEST(InfixToPostfix_ParenthesesTests, Throws_when_unmatched_right_par)
 
 TEST(InfixToPostfix_ParenthesesTests, Throws_when_one_par_pair_and_unmatched_right_par)
 {
-	const InfixSymbols input {
-		InfixSymbol{InfixSymbol::OpenPar{}},
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::ClosePar{}},
-		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
-		InfixSymbol{Value{4}},
-		InfixSymbol{InfixSymbol::ClosePar{}},
+	const InfixTokens input {
+		InfixToken{InfixToken::OpenPar{}},
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::ClosePar{}},
+		InfixToken{InfixToken::Operator::MULTIPLICATION},
+		InfixToken{Value{4}},
+		InfixToken{InfixToken::ClosePar{}},
 	};
 	
 	InfixToPostfixConverter sut{};
@@ -546,16 +546,16 @@ TEST(InfixToPostfix_ParenthesesTests, Throws_when_one_par_pair_and_unmatched_rig
 
 TEST(InfixToPostfix_ParenthesesTests, Throws_when_parentheses_have_swapped_order)
 {
-	const InfixSymbols input {
-		InfixSymbol{Value{2}},
-		InfixSymbol{InfixSymbol::Operator::SUBTRACTION},
-		InfixSymbol{InfixSymbol::ClosePar{}},
-		InfixSymbol{Value{3}},
-		InfixSymbol{InfixSymbol::Operator::ADDITION},
-		InfixSymbol{Value{4}},
-		InfixSymbol{InfixSymbol::OpenPar{}},
-		InfixSymbol{InfixSymbol::Operator::MULTIPLICATION},
-		InfixSymbol{Value{5}},
+	const InfixTokens input {
+		InfixToken{Value{2}},
+		InfixToken{InfixToken::Operator::SUBTRACTION},
+		InfixToken{InfixToken::ClosePar{}},
+		InfixToken{Value{3}},
+		InfixToken{InfixToken::Operator::ADDITION},
+		InfixToken{Value{4}},
+		InfixToken{InfixToken::OpenPar{}},
+		InfixToken{InfixToken::Operator::MULTIPLICATION},
+		InfixToken{Value{5}},
 	};
 	
 	InfixToPostfixConverter sut{};
