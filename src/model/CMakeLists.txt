@@ -2,14 +2,16 @@ set(
 	HEADERS
 	include/model/Calculator.hpp
 	include/model/PostfixToken.hpp
+	include/model/Reader.hpp
 )
 
 set(
 	SOURCES
 	src/Calculator.cpp
 	src/InfixToken.cpp
-	src/PostfixToken.cpp
 	src/InfixToPostfix.cpp
+	src/PostfixToken.cpp
+	src/Reader.cpp
 )
 
 add_library(

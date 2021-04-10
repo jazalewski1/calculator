@@ -17,6 +17,7 @@ set(CMAKE_UTILITIES ${PROJECT_SOURCE_DIR}/cmake)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 set(TEST_EXECUTABLE_OUTPUT_PATH ${EXECUTABLE_OUTPUT_PATH}/test)
 
+add_subdirectory(${PROJECT_SOURCE_DIR}/src/io)
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/math)
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/model)
 add_subdirectory(${PROJECT_SOURCE_DIR}/src/util)

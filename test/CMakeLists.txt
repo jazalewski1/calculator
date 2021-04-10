@@ -33,3 +33,13 @@ add_test_module(
 	INCLUDE_DIRS
 	helper
 )
+
+add_test_module(
+	NAME ReaderTests
+	PATH io/ReaderTests.cpp
+	DEPENDS
+	gtest
+	gtest_main
+	io
+	util
+)
