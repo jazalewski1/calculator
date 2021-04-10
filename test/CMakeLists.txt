@@ -30,4 +30,6 @@ add_test_module(
 	gmock
 	model
 	util
+	INCLUDE_DIRS
+	helper
 )

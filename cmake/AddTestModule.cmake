@@ -3,7 +3,7 @@ function(add_test_module)
 		"ARG"
 		""
 		"NAME;PATH"
-		"DEPENDS"
+		"DEPENDS;INCLUDE_DIRS"
 		${ARGN}
 	)
 
@@ -15,6 +15,11 @@ function(add_test_module)
 	target_link_libraries(
 		${ARG_NAME}
 		${ARG_DEPENDS}
+	)
+
+	target_include_directories(
+		${ARG_NAME}
+		PRIVATE ${ARG_INCLUDE_DIRS}
 	)
 
 	add_test(NAME ${ARG_NAME} COMMAND ${ARG_NAME})
