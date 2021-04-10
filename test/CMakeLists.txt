@@ -35,6 +35,20 @@ add_test_module(
 )
 
 add_test_module(
+	NAME TokenizerTests
+	PATH model/TokenizerTests.cpp
+	DEPENDS
+	gtest
+	gtest_main
+	gmock
+	model
+	util
+	INCLUDE_DIRS
+	helper
+	mock
+)
+
+add_test_module(
 	NAME ReaderTests
 	PATH io/ReaderTests.cpp
 	DEPENDS

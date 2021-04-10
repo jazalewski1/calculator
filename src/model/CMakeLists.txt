@@ -3,6 +3,7 @@ set(
 	include/model/Calculator.hpp
 	include/model/PostfixToken.hpp
 	include/model/Reader.hpp
+	include/model/Tokenizer.hpp
 )
 
 set(
@@ -12,6 +13,7 @@ set(
 	src/InfixToPostfix.cpp
 	src/PostfixToken.cpp
 	src/Reader.cpp
+	src/Tokenizer.cpp
 )
 
 add_library(
